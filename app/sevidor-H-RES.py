@@ -3,10 +3,12 @@
 import threading
 import socket
 from threading import Lock
+import sys
 # import hotel
 
 
 # Configurações do servidor
+TAM_MSG = 1024
 HOST = 'localhost'
 PORT = 50000
 
@@ -16,17 +18,17 @@ lock = Lock()
 #Função para processar as solicitações dos clientes
 def atender_clientes(socket_cliente, endereco_cliente, solicitacao):
     # Recebe a solicitação do cliente e decodifica
-    solicitacao = solicitacao.recv(1024).decode().strip()
+    solicitacao = solicitacao.recv(TAM_MSG).decode().strip()
         #Avisando que o cliente mandou mensagem
     print(f'Cliente mandou: {solicitacao}')
 
         # processar a solicitação do cliente separando a tupla e tirando aquela parte desnecessária.
-    solicitacao_partida = solicitacao.split()
+    solicitacao = solicitacao.split()
     
     # Bloqueia o acesso ao elemento txt de registro que vai ser escrito agora
     with lock:
         # solicitação de registro    
-        if solicitacao_partida[0].upper() == 'REGISTRAR':
+        if solicitacao[0].upper() == 'REGISTRAR' and len(solicitacao) == 2:
             usuario = solicitacao_partida[1]
             senha = solicitacao_partida[2]
 
@@ -46,10 +48,9 @@ def atender_clientes(socket_cliente, endereco_cliente, solicitacao):
 
         with lock:
         # solicitação de login 
-            if solicitacao_partida[0].upper() == 'LOGIN':
+            elif solicitacao[0].upper() == 'LOGIN' and len(solicitacao) == 3:
 
                 # login do usuário
-                # essa função precisa existir na classe hotel. JOHNNER CRIE O HOTEL!
                 if hotel.login_usuario(usuario, senha):
                         resposta = (str.encode('+OK 201 Usuário logado com sucesso. \n'))
                         socket_cliente.send(resposta)
@@ -58,8 +59,16 @@ def atender_clientes(socket_cliente, endereco_cliente, solicitacao):
                     socket_cliente.send(resposta)
             else:
 
+            elif solicitacao[0].upper() == 'RESERVAR':
 
-
+                # reservar quarto do usuário
+                if hotel.login_usuario(usuario, senha):
+                        resposta = (str.encode('+OK 201 Usuário logado com sucesso. \n'))
+                        socket_cliente.send(resposta)
+                else:
+                    resposta = (str.encode('-ERR 403 Usuário não existe. \n'))
+                    socket_cliente.send(resposta)
+            else:
 
 
 # Função para processar TODOS os clientes que vão se conectar, atender mais de um
