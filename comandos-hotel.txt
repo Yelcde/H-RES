@@ -9,11 +9,5 @@ HOTEL:
   - RESERVE [ room_id ] [ checkin ] [ checkout ]    -> reserva um quarto pelo seu ID e informa as diárias
   - CANCEL [ room_id ]                              -> cancela a reserva do quarto pelo seu ID
   - LIST                                            -> lista todos os quartos disponíveis
+  - FIND [ room_id ]				                        -> procura quarto e lista todas as informaçõe
   - SEARCH [ min_price_daily ]                      -> procura todos os quartos disponíveis de acordo com um preço mínimo
-
-
-DISPONIVEIS -> AVL [1, 2, 3, 5, 6]
-RESERVADOS -> LISTA [4, 7, 8]
-
-QUARTOS DO CLIENTE (QUE ELE RESERVOU) -> LISTA [4, 7]
-QUARTOS DO CLIENTE (QUE ELE RESERVOU) -> LISTA [8]
