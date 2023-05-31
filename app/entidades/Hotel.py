@@ -1,5 +1,6 @@
 from estruturas.avl import AVL
 from comandos_usuario import registrar 
+from comandos_usuario import login 
 from estruturas.lista_encadeada import ListaEncadeada
 
 class Hotel:
@@ -15,3 +16,12 @@ class Hotel:
         except:
             self.__clientes.append(registrar(usuario, senha))
             return True
+        
+    def login_cliente(self, usuario, senha) -> bool:
+        try:
+            pesquisa = self.__clientes.busca(usuario)
+            if pesquisa is not None: 
+                return self.__cliente.pegar(login(usuario, senha))
+        except:
+            return False
+
