@@ -1,4 +1,5 @@
 from estruturas.avl import AVL
+from comandos_usuario import registrar 
 from estruturas.lista_encadeada import ListaEncadeada
 
 class Hotel:
@@ -7,5 +8,10 @@ class Hotel:
         self.__quartos_ocupados = AVL()
         self.__clientes = ListaEncadeada()
 
-    def add_cliente():
-        # registrar()
+    def registrar_cliente(self, usuario, senha):
+        try:
+            _ = self.__clientes.busca(usuario)
+            return False
+        except:
+            self.__clientes.append(registrar(usuario, senha))
+            return True

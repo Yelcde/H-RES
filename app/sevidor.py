@@ -4,12 +4,16 @@ import threading
 import socket
 from threading import Lock
 import sys
+from entidades import Hotel
 # import hotel
 
 # Configurações do servidor
 TAM_MSG = 1024
 HOST = 'localhost'
 PORT = 50000
+
+# Instanciando Hotel
+hotel = Hotel()
 
 # Os semáforos
 lock = Lock()
@@ -28,12 +32,12 @@ def atender_clientes(socket_cliente, endereco_cliente, solicitacao):
     with lock:
         # solicitação de registro    
         if solicitacao[0].upper() == 'REGISTRAR' and len(solicitacao) == 2:
-            usuario = solicitacao_partida[1]
-            senha = solicitacao_partida[2]
+            usuario = solicitacao[1]
+            senha = solicitacao[2]
 
             # registro do usuário
             # essa função precisa existir na classe hotel. JOHNNER CRIE O HOTEL!
-            if hotel.registro_usuario(usuario, senha):
+            if hotel.registrar_clientes(usuario, senha):
                 resposta = (str.encode('+OK 200 Usuário registrado com sucesso. \n'))
                 socket_cliente.send(resposta)
             else:
@@ -45,29 +49,29 @@ def atender_clientes(socket_cliente, endereco_cliente, solicitacao):
             socket_cliente.send(resposta_erro)
              # libera o acesso ao recurso compartilhado
 
-        with lock:
+    with lock:
         # solicitação de login 
-            elif solicitacao[0].upper() == 'LOGIN' and len(solicitacao) == 3:
+        elif solicitacao[0].upper() == 'LOGIN' and len(solicitacao) == 3:
 
-                # login do usuário
-                if hotel.login_usuario(usuario, senha):
-                        resposta = (str.encode('+OK 201 Usuário logado com sucesso. \n'))
-                        socket_cliente.send(resposta)
-                else:
-                    resposta = (str.encode('-ERR 403 Usuário não existe. \n'))
+            # login do usuário
+            if hotel.login_usuario(usuario, senha):
+                    resposta = (str.encode('+OK 201 Usuário logado com sucesso. \n'))
                     socket_cliente.send(resposta)
             else:
+                resposta = (str.encode('-ERR 403 Usuário não existe. \n'))
+                socket_cliente.send(resposta)
+        else:
 
-            elif solicitacao[0].upper() == 'RESERVAR':
+        elif solicitacao[0].upper() == 'RESERVAR':
 
-                # reservar quarto do usuário
-                if hotel.login_usuario(usuario, senha):
-                        resposta = (str.encode('+OK 201 Usuário logado com sucesso. \n'))
-                        socket_cliente.send(resposta)
-                else:
-                    resposta = (str.encode('-ERR 403 Usuário não existe. \n'))
+            # reservar quarto do usuário
+            if hotel.login_usuario(usuario, senha):
+                    resposta = (str.encode('+OK 201 Usuário logado com sucesso. \n'))
                     socket_cliente.send(resposta)
             else:
+                resposta = (str.encode('-ERR 403 Usuário não existe. \n'))
+                socket_cliente.send(resposta)
+        else:
 
 
 # Função para processar TODOS os clientes que vão se conectar, atender mais de um
