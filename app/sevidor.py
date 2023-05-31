@@ -6,7 +6,6 @@ from threading import Lock
 import sys
 # import hotel
 
-
 # Configurações do servidor
 TAM_MSG = 1024
 HOST = 'localhost'

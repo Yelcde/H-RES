@@ -1,10 +1,11 @@
 from estruturas.avl import AVL
+from estruturas.lista_encadeada import ListaEncadeada
 
 class Hotel:
     def __init__(self):
         self.__quartos_disponiveis = AVL()
         self.__quartos_ocupados = AVL()
-        self.__clientes = []
+        self.__clientes = ListaEncadeada()
 
-    def reserva(self, id_quarto, checkin, chekout):
-        pass
+    def add_cliente():
+        # registrar()
