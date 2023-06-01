@@ -13,12 +13,13 @@ HOST = 'localhost'
 PORT = 50000
 
 # Os semáforos
-lock = Lock()
+lock_registro = Lock()
+lock_login = Lock()
 
 #Função para processar as solicitações dos clientes
 def atender_clientes(socket_cliente, endereco_cliente, solicitacao):
     # Recebe a solicitação do cliente e decodifica
-    solicitacao = solicitacao.recv(TAM_MSG).decode().strip()
+    solicitacao = solicitacao.recv(TAM_MSG).decode()
         #Avisando que o cliente mandou mensagem
     print(f'Cliente mandou: {solicitacao}')
 
@@ -26,40 +27,43 @@ def atender_clientes(socket_cliente, endereco_cliente, solicitacao):
     solicitacao = solicitacao.split()
     
     # Bloqueia o acesso ao elemento txt de registro que vai ser escrito agora
-    with lock:
-        # solicitação de registro    
-        if solicitacao[0].upper() == 'REGISTRAR' and len(solicitacao) == 2:
-            usuario = solicitacao_partida[1]
-            senha = solicitacao_partida[2]
-
+    with lock_registro:
+        # solicitação de registro que vai ter registrar no [0], a senha e o usuário
+        if solicitacao[0].upper() == 'REGISTRAR' and len(solicitacao) == 3:
+            usuario = solicitacao[1]
+            senha = solicitacao[2]
+        
+            try:
             # registro do usuário
             # essa função precisa existir na classe hotel. JOHNNER CRIE O HOTEL!
-            if hotel.registro_usuario(usuario, senha):
-                resposta = (str.encode('+OK 200 Usuário registrado com sucesso. \n'))
-                socket_cliente.send(resposta)
-            else:
+                if hotel.registro_usuario(usuario, senha):
+                    resposta = (str.encode('+OK 200 Usuário registrado com sucesso. \n'))
+                    socket_cliente.send(resposta)
+            
+            # Erros no registro do usuário 
+            except:
                 resposta_erro = (str.encode(f'-ERR 403 Usuário já existe. \n'))
                 socket_cliente.send(resposta_erro)
+            
 
-        else:
-            resposta_erro = (str.encode(f'-ERR 430 Comando inválido. \n'))
-            socket_cliente.send(resposta_erro)
-             # libera o acesso ao recurso compartilhado
+        # solicitação de login para pegar somente o comando [0] que vai ter o login, senha e usuário
+        elif solicitacao[0].upper() == 'LOGIN' and len(solicitacao) == 3:
+            usuario = solicitacao[1]
+            senha = solicitacao[2]
 
-        with lock:
-        # solicitação de login 
-            elif solicitacao[0].upper() == 'LOGIN' and len(solicitacao) == 3:
-
-                # login do usuário
+            try:
+                # login do usuário com sucesso
                 if hotel.login_usuario(usuario, senha):
-                        resposta = (str.encode('+OK 201 Usuário logado com sucesso. \n'))
-                        socket_cliente.send(resposta)
-                else:
-                    resposta = (str.encode('-ERR 403 Usuário não existe. \n'))
+                    resposta = (str.encode('+OK 201 Usuário logado com sucesso. \n'))
                     socket_cliente.send(resposta)
-            else:
+                
+                # Erros no login
+            except:
+                resposta_erro = (str.encode('-ERR 403 Usuário não existe. \n'))
+                socket_cliente.send(resposta_erro)
 
-            elif solicitacao[0].upper() == 'RESERVAR':
+
+        elif solicitacao[0].upper() == 'RESERVAR':
 
                 # reservar quarto do usuário
                 if hotel.login_usuario(usuario, senha):
@@ -68,7 +72,22 @@ def atender_clientes(socket_cliente, endereco_cliente, solicitacao):
                 else:
                     resposta = (str.encode('-ERR 403 Usuário não existe. \n'))
                     socket_cliente.send(resposta)
-            else:
+                pass
+        
+        elif solicitacao[0].upper() == 'SAIR':
+            try:
+                socket_cliente.send(str.encode('+OK\n'))
+                return False
+            
+            except:
+                socket_cliente.send(str.encode('-ERR Comando inválido\n'))
+                return True
+                
+        # Comando errado geral
+        else:
+            solicitacao = ' '.join(solicitacao[:-1])
+            resposta_erro = (str.encode(f'-ERR 430 Comando inválido. \n'))
+            socket_cliente.send(resposta_erro)
 
 
 # Função para processar TODOS os clientes que vão se conectar, atender mais de um
@@ -107,6 +126,7 @@ while True:
     except: break
     # Cria uma Thread diferente para cada cliente
     threading.Thread(target=processar_clientes, args=(socket_cliente, endereco_cliente)).start()
+
 # Encerra a conexão com o cliente
 socket_cliente.close()
 
