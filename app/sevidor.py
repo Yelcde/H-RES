@@ -4,13 +4,16 @@ import threading
 import socket
 from threading import Lock
 import sys
+from entidades import Hotel
 # import hotel
-
 
 # Configurações do servidor
 TAM_MSG = 1024
 HOST = 'localhost'
 PORT = 50000
+
+# Instanciando Hotel
+hotel = Hotel()
 
 # Os semáforos
 lock_registro = Lock()
@@ -65,12 +68,9 @@ def atender_clientes(socket_cliente, endereco_cliente, solicitacao):
 
         elif solicitacao[0].upper() == 'RESERVAR':
 
-                # reservar quarto do usuário
-                if hotel.login_usuario(usuario, senha):
-                        resposta = (str.encode('+OK 201 Usuário logado com sucesso. \n'))
-                        socket_cliente.send(resposta)
-                else:
-                    resposta = (str.encode('-ERR 403 Usuário não existe. \n'))
+            # reservar quarto do usuário
+            if hotel.login_usuario(usuario, senha):
+                    resposta = (str.encode('+OK 201 Usuário logado com sucesso. \n'))
                     socket_cliente.send(resposta)
                 pass
         

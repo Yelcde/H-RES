@@ -1,14 +1,17 @@
-from estruturas.avl import AVLTree
+from estruturas.avl import AVL
+from comandos_usuario import registrar 
+from estruturas.lista_encadeada import ListaEncadeada
 
-# Instanciando AVL
-avl = AVLTree()
-
-# Criando a Classe Hotel
 class Hotel:
     def __init__(self):
-        self.__quartos_disponiveis = None # linkar com a estrutura AVL
-        self.__quartos_ocupados = None # linkar com a estrutura AVL
-        self.__clientes = [] 
+        self.__quartos_disponiveis = AVL()
+        self.__quartos_ocupados = AVL()
+        self.__clientes = ListaEncadeada()
 
-    def reserva(self, id_quarto, checkin, chekout):
-        novareserva = Reserva(quarto, usuario, '12/03', '22/03')
+    def registrar_cliente(self, usuario, senha):
+        try:
+            _ = self.__clientes.busca(usuario)
+            return False
+        except:
+            self.__clientes.append(registrar(usuario, senha))
+            return True
