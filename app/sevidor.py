@@ -5,7 +5,7 @@ import socket
 from threading import Lock
 import sys
 from entidades import Hotel
-# import hotel
+
 
 # Configurações do servidor
 TAM_MSG = 1024
@@ -39,7 +39,7 @@ def atender_clientes(socket_cliente, endereco_cliente, solicitacao):
             try:
             # registro do usuário
             # essa função precisa existir na classe hotel. JOHNNER CRIE O HOTEL!
-                if hotel.registro_usuario(usuario, senha):
+                if Hotel.registrar_cliente(usuario, senha):
                     resposta = (str.encode('+OK 200 Usuário registrado com sucesso. \n'))
                     socket_cliente.send(resposta)
             
