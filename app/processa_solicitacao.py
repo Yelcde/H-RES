@@ -1,6 +1,7 @@
 from socket import socket
 
 TAM_MSG = 1024
+global LOGADO 
 LOGADO = False
 
 def processa_solicitacao(socket_cliente: socket) -> bool:
@@ -10,7 +11,7 @@ def processa_solicitacao(socket_cliente: socket) -> bool:
     A função retornará "False" para indicar que o usuário pode fazer
     outra solicitação para o servidor.
     '''
-
+    global LOGADO
     try:
         solicitacao = input('H-RES >>> ')
     except KeyboardInterrupt:
@@ -28,5 +29,7 @@ def processa_solicitacao(socket_cliente: socket) -> bool:
 
                 status, codigo = dados.decode().split()
                 print(f'{status} {codigo}')
+                if codigo == 201:
+                    LOGADO = True
     else:
         print('\nComando inválido')

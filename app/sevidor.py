@@ -4,7 +4,7 @@ import threading
 import socket
 from threading import Lock
 import sys
-from entidades import Hotel
+from entidades.Hotel import Hotel
 
 
 # Configurações do servidor
@@ -56,7 +56,7 @@ def atender_clientes(socket_cliente, endereco_cliente, solicitacao):
 
             try:
                 # login do usuário com sucesso
-                if hotel.login_usuario(usuario, senha):
+                if hotel.login_cliente(usuario, senha):
                     resposta = (str.encode('+OK 201 Usuário logado com sucesso. \n'))
                     socket_cliente.send(resposta)
                 
