@@ -14,12 +14,8 @@ class Hotel:
 
     def login_cliente(self, usuario, senha) -> bool:
         try:
-           pesquisa = self.__clientes.busca(usuario)
-           if pesquisa is not None:
-               return self.__cliente.elemento(login(pesquisa.split()))
-           else:
-               False
-
+           self.__clientes.busca(usuario)
+           return self.__clientes(login(usuario, senha))
         except:
             return False
 

@@ -6,6 +6,5 @@ from entidades import Usuario
 def login_usuario (self, usuario:str, senha:str)-> bool:
     if usuario.senha != senha:
         return False
-    
     else:
-         return True
+        return True
