@@ -55,6 +55,13 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         if hotel.login_usuario(usuario, senha):
             resposta = (str.encode('+OK 201 Usuário logado com sucesso. \n'))
 
+    elif solicitacao[0].upper() == 'LIST' and len(solicitacao) == 3: 
+        resposta = '' 
+        
+        listar = hotel.listar()
+        
+        resposta = str.encode(f"+OK ?? {listar}")
+
     elif comando == 'SAIR':
         return False
 
