@@ -1,6 +1,7 @@
 from estruturas.avl import AVL
 from comandos_usuario import registrar
 from comandos_usuario import login
+from comandos_hotel import listar_quarto
 from estruturas.lista_encadeada import ListaEncadeada
 
 class Hotel:
@@ -18,4 +19,5 @@ class Hotel:
            return self.__clientes(login(usuario, senha))
         except:
             return False
-
+    def listar(self) -> object:
+        return listar_quarto(self.__quartos_disponiveis)

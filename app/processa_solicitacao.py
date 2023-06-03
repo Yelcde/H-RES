@@ -29,6 +29,7 @@ def processa_solicitacao(socket_cliente: socket) -> bool:
 
                 status, codigo = dados.decode().split()
                 print(f'{status} {codigo}')
+                
                 if codigo == 201:
                     LOGADO = True
     else:

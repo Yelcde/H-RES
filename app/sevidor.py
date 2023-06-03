@@ -58,6 +58,13 @@ def atender_clientes(socket_cliente, endereco_cliente, solicitacao):
         if hotel.login_usuario(usuario, senha):
             resposta = (str.encode('+OK 201 Usuário logado com sucesso. \n'))
 
+    elif solicitacao[0].upper() == 'LIST' and len(solicitacao) == 3: 
+        resposta = '' 
+        
+        listar = hotel.listar()
+        
+        resposta = str.encode(f"+OK ?? {listar}")
+
     elif comando == 'SAIR':
         try:
             socket_cliente.send(str.encode('+OK\n'))
