@@ -1,44 +1,41 @@
-# Importações
-import threading
 import socket
+import threading
+
 from entidades.Hotel import Hotel
 
-# Configurações do servidor
 TAM_MSG = 1024
 HOST = 'localhost'
 PORT = 50000
 
-hotel = Hotel()
+def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
+    '''
+    Função responsável por processar os dados que serão
+    enviados pelo cliente para o servidor.
 
-#Função para processar as solicitações dos clientes
-def atender_clientes(socket_cliente, endereco_cliente, solicitacao):
+    Retorna "True" caso tenha conseguido processar a solicitação do usuário.
+    Retorna "False" caso o usuário faça o LOGOUT na aplicação.
+    '''
     # Recebe a solicitação do cliente e decodifica
-    solicitacao = solicitacao.recv(TAM_MSG).decode()
-        #Avisando que o cliente mandou mensagem
-    print(f'Cliente mandou: {solicitacao}')
+    solicitacao = solicitacao.decode()
 
-        # processar a solicitação do cliente separando a tupla e tirando aquela parte desnecessária.
+    print(f'Cliente {endereco_cliente} mandou: {solicitacao}')
+
     solicitacao = solicitacao.split()
     comando = solicitacao[0].upper()
     resposta = ''
 
-    # solicitação de registro que vai ter registrar no [0], a senha e o usuário
     if comando == 'REGISTRAR' and len(solicitacao) == 3:
-        usuario = solicitacao[1]
+        login = solicitacao[1]
         senha = solicitacao[2]
 
-        # registro do usuário
-        # essa função precisa existir na classe hotel.
         resposta = ''
-        registrou = hotel.registrar_cliente(usuario, senha)
+        registrou = hotel.registrar_cliente(login, senha)
 
         if registrou:
-            resposta = (str.encode('+OK 200 Usuário registrado com sucesso.'))
+            resposta = str.encode('+OK 200')
         else:
-            # Erros no registro do usuário
-            resposta = (str.encode(f'-ERR 403 Usuário já existe.'))
+            resposta = str.encode('-ERR 403')
 
-    # solicitação de login para pegar somente o comando [0] que vai ter o login, senha e usuário
     elif comando == 'LOGIN' and len(solicitacao) == 3:
         usuario = solicitacao[1]
         senha = solicitacao[2]
@@ -48,10 +45,10 @@ def atender_clientes(socket_cliente, endereco_cliente, solicitacao):
 
         if logou:
             # login do usuário com sucesso
-            resposta = (str.encode('+OK 201 Usuário logado com sucesso.'))
+            resposta = str.encode('+OK 201')
         else:
             # Erros no login
-            resposta = (str.encode('-ERR 403 Usuário não existe.'))
+            resposta = str.encode('-ERR 403')
 
     elif comando == 'RESERVAR':
         # reservar quarto do usuário
@@ -59,58 +56,47 @@ def atender_clientes(socket_cliente, endereco_cliente, solicitacao):
             resposta = (str.encode('+OK 201 Usuário logado com sucesso. \n'))
 
     elif comando == 'SAIR':
-        try:
-            socket_cliente.send(str.encode('+OK\n'))
-            return False
-
-        except:
-            socket_cliente.send(str.encode('-ERR Comando inválido\n'))
-            return True
+        return False
 
     # Comando errado geral
     else:
-        solicitacao = ' '.join(solicitacao[:-1])
-        resposta = (str.encode(f'-ERR 400 Comando inválido.'))
+        resposta = str.encode('-ERR 400')
 
     socket_cliente.send(resposta)
+    return True
 
-
-# Função para processar TODOS os clientes que vão se conectar, atender mais de um
-def processar_clientes(socket_cliente, endereco_cliente, solicitacao):
-    # conecta com um novo cliente
-    print('Conectado com', endereco_cliente)
+def processar_clientes(socket_cliente, endereco_cliente):
+    '''
+    Função responsável por processar conexões de clientes.
+    '''
+    print(f'Novo cliente conectado: {endereco_cliente}')
 
     while True:
-        # decodifica a solicitação nova enviada
-        solicitacao = socket_cliente.recv(1024)
+        solicitacao = socket_cliente.recv(TAM_MSG)
+
         # Se não tiver solicitação ou se não entra nas solicitações desejadas, ele sai.
-        if not solicitacao or not atender_clientes(socket_cliente, endereco_cliente, solicitacao):break
+        if not solicitacao or not atender_cliente(socket_cliente, endereco_cliente, solicitacao):
+            break
 
     print('Desconectando do cliente', endereco_cliente)
     socket_cliente.close()
 
-# Criação do socket TCP
+hotel = Hotel()
+
 socket_servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-# Vincula o socket ao endereço e porta do servidor
 socket_servidor.bind((HOST, PORT))
-
-# servidor escutando na porta
 socket_servidor.listen(50)
 
-print('Servidor de hotel iniciado. Aguardando conexões...')
+print('=' * 53)
+print('🏨 Servidor de H-RES iniciado. Aguardando conexões...')
+print('=' * 53, end='\n\n')
 
 while True:
     try:
-    # Aguarda uma conexão do cliente
+        # Aguardando conexões de clientes
         socket_cliente, endereco_cliente = socket_servidor.accept()
-        # Cliente aceita a conexão com o servidor
-        print('Cliente conectado:', endereco_cliente)
-
-    # Se não houver conexão, o servidor sai.
     except: break
-    # Cria uma Thread diferente para cada cliente
+
     threading.Thread(target=processar_clientes, args=(socket_cliente, endereco_cliente)).start()
 
-# Encerra o socket do servidor
 socket_servidor.close()

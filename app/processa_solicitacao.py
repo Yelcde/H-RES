@@ -1,8 +1,15 @@
 from socket import socket
 
 TAM_MSG = 1024
-global LOGADO 
 LOGADO = False
+
+codigos_respostas = {
+    '200': 'Usuário registrado com sucesso.',
+    '201': 'Usuário logado com sucesso.',
+    '400': 'Comando inválido.',
+    '402': 'Usuário já existe.',
+    '403': ' Usuário não existe.'
+}
 
 def processa_solicitacao(socket_cliente: socket) -> bool:
     '''
@@ -12,6 +19,7 @@ def processa_solicitacao(socket_cliente: socket) -> bool:
     outra solicitação para o servidor.
     '''
     global LOGADO
+
     try:
         solicitacao = input('H-RES >>> ')
     except KeyboardInterrupt:
@@ -28,8 +36,13 @@ def processa_solicitacao(socket_cliente: socket) -> bool:
                 dados = socket_cliente.recv(TAM_MSG)
 
                 status, codigo = dados.decode().split()
-                print(f'{status} {codigo}')
+                resposta = codigos_respostas[codigo]
+
+                print(f'{status} {codigo}, {resposta}\n')
+
                 if codigo == 201:
                     LOGADO = True
     else:
-        print('\nComando inválido')
+        print('Comando inválido\n')
+
+    return True

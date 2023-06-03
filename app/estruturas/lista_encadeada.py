@@ -116,10 +116,11 @@ class ListaEncadeada:
         while cursor != None:
             if cursor.carga == chave:
                 return cont
+            cont += 1
             cursor = cursor.prox
-            cont +=1
-        return None
-    
+
+        raise ListaException(f'Chave {chave} não encontrada')
+
     def elemento(self, posicao: int) -> any:
         try:
             assert posicao > 0 and posicao <= len(self)
@@ -134,16 +135,6 @@ class ListaEncadeada:
             return cursor.carga
         except AssertionError:
             raise ListaException('Posicao inválida')
-        
-        # def pegar_usuario(self, valor: any) -> object:
-        # cursor = self.__head
-
-        # while(cursor != None):
-        #     if cursor.carga== valor:
-        #         return cursor.carga
-        #     cursor = cursor.prox
-        
-        # raise ListaException
 
     def __str__(self):
         s = '[ '
