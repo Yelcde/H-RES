@@ -1,6 +1,7 @@
 from threading import Lock
 
 from estruturas.lista_encadeada import ListaEncadeada, ListaException
+from entidades.Usuario import Usuario
 
 lock = Lock()
 
@@ -22,5 +23,8 @@ def registrar(lista_de_clientes: ListaEncadeada, login: str, senha: str) -> bool
             arq_usuarios = open('./app/usuarios.txt', 'a')
             arq_usuarios.write(novo_usuario)
             arq_usuarios.close()
+
+            novo_usuario = Usuario(login, senha)
+            lista_de_clientes.append(novo_usuario)
 
             return True

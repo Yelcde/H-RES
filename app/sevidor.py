@@ -48,19 +48,20 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
             resposta = str.encode('+OK 201')
         else:
             # Erros no login
-            resposta = str.encode('-ERR 403')
+            resposta = str.encode('-ERR 402')
 
     elif comando == 'RESERVAR':
         # reservar quarto do usuário
         if hotel.login_usuario(usuario, senha):
             resposta = (str.encode('+OK 201 Usuário logado com sucesso. \n'))
 
-    elif solicitacao[0].upper() == 'LIST' and len(solicitacao) == 3: 
-        resposta = '' 
-        
-        listar = hotel.listar()
-        
-        resposta = str.encode(f"+OK ?? {listar}")
+    elif solicitacao[0].upper() == 'LIST' and len(solicitacao) == 3:
+        pass
+        # resposta = ''
+
+        # listar = hotel.listar()
+
+        # resposta = str.encode(f"+OK ?? {listar}")
 
     elif comando == 'SAIR':
         return False

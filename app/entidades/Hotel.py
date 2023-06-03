@@ -1,6 +1,6 @@
 from comandos_usuario.login import login_usuario
 from comandos_usuario.registrar import registrar
-from comandos_hotel.listar_quarto import listar_quarto
+# from comandos_hotel.listar_quarto import listar_quarto
 from entidades.Usuario import Usuario
 from estruturas.avl import AVL
 from estruturas.lista_encadeada import ListaEncadeada
@@ -38,4 +38,5 @@ class Hotel:
 
         arq_usuarios.close()
     def listar(self) -> object:
-        return listar_quarto(self.__quartos_disponiveis)
+        pass
+        # return listar_quarto(self.__quartos_disponiveis)
