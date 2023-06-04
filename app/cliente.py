@@ -13,6 +13,7 @@ elif len(sys.argv) == 3:
     HOST = sys.argv[1]
     PORTA = int(sys.argv[2])
 
+
 print('=' * 39)
 print('🏨 H-RES | Sistema de reservas de Hotel')
 print('=' * 39, end='\n\n')

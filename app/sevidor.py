@@ -40,6 +40,7 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         usuario = solicitacao[1]
         senha = solicitacao[2]
 
+    
         resposta = ''
         logou = hotel.login_cliente(usuario, senha)
 
@@ -47,30 +48,46 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
             # login do usuário com sucesso
             resposta = str.encode('+OK 201')
         else:
-            # Erros no login
+            # Erro no login
             resposta = str.encode('-ERR 402')
 
-    elif comando == 'RESERVAR':
-        # reservar quarto do usuário
+    elif comando == 'LISTAR' and len(solicitacao) == 2:
+        resposta = ''
+        listar = hotel.listar_quartos_disponiveis()
+        resposta = str.encode(f'+OK 207 \n{listar}')
+
+    elif comando == 'RESERVAR' and len(solicitacao) == 2:
+        usuario = solicitacao[1]
+        senha = solicitacao[2]
+
+        resposta = ''
+        # Se o usuário tiver logado = ok
         if hotel.login_usuario(usuario, senha):
-            resposta = (str.encode('+OK 201 Usuário logado com sucesso. \n'))
+            # se reserva acontecer
+            if hotel.reservar(usuario, quarto, chekin, checkout):
+                resposta = str.encode('+OK 203')
+            # se reserva não acontecer
+            else:
+                resposta = str.encode('+OK 405')
+        # se usuário não logado
+        else:
+            resposta = str.encode('+OK 401')
 
-    elif solicitacao[0].upper() == 'LIST' and len(solicitacao) == 3:
+    elif solicitacao[2].upper() == 'NUMERO' and len(solicitacao) == 5:
         pass
-        # resposta = ''
-
-        # listar = hotel.listar()
-
-        # resposta = str.encode(f"+OK ?? {listar}")
+       
+    elif solicitacao[2].upper() == 'PREÇO' and len(solicitacao) == 5:
+        pass
 
     elif comando == 'SAIR':
         return False
 
-    # Comando errado geral
+    # Comando errado geral inválido
     else:
         resposta = str.encode('-ERR 400')
 
     socket_cliente.send(resposta)
+
     return True
 
 def processar_clientes(socket_cliente, endereco_cliente):
