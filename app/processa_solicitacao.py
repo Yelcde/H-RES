@@ -1,6 +1,5 @@
 from socket import socket
 
-
 TAM_MSG = 1024
 LOGADO = False
 
@@ -10,8 +9,8 @@ codigos_respostas = {
     '400': 'Comando inválido.',
     '402': 'Usuário já existe.',
     '403': 'Usuário não existe.',
+    '404': 'Senha incorreta.',
     '410': 'Usuário já está logado.',
-
 }
 
 def processa_solicitacao(socket_cliente: socket) -> bool:
@@ -39,31 +38,26 @@ def processa_solicitacao(socket_cliente: socket) -> bool:
                 socket_cliente.send(solicitacao.encode())
                 dados = socket_cliente.recv(TAM_MSG)
 
-
                 status, codigo = dados.decode().split()
                 resposta = codigos_respostas[codigo]
 
                 print(f'{status} {codigo}, {resposta}\n')
 
-
-                if codigo == 200:
+                if codigo == '200' or codigo == '201':
                     LOGADO = True
-                elif codigo == 201:
-                    LOGADO = True
-                     
 
-        elif LOGADO and (comando.split(' ')[0].upper() == 'LOGIN') or LOGADO and (comando.split(' ')[0].upper() == 'REGISTRAR'):
-        # Se o usuário estiver logado e tenta logar dnv
-            status, codigo = dados.decode().split()
-            resposta = codigos_respostas[codigo]
-	    
+        elif LOGADO and (comando == 'LOGIN') or LOGADO and (comando == 'REGISTRAR'):
+            # Se o usuário estiver logado e tenta logar novamente
+            resposta = codigos_respostas['410']
+            print(f'-ERR 410, {resposta}\n')
+
         # se tiver logado, envia a solicitacao ao servidor
         else:
             solicitacao += ' ' + usuario # envia para o servidor com o seu usuario marcando que é ele.
             socket_cliente.send(solicitacao.encode()) # envia a solicitacao ao servidor com seu registro
 
             # recebe a solicitação enviada pelo serividor
-            dados = socket_cliente.recv(TAM_MSG) 
+            dados = socket_cliente.recv(TAM_MSG)
             dados = dados.decode() # decodifica a mensagem enviada pelo servidor
             print(dados) # printa a mensagem enviada pelo servidor
 
@@ -71,6 +65,7 @@ def processa_solicitacao(socket_cliente: socket) -> bool:
             status, codigo = dados.decode().split()
             resposta = codigos_respostas[codigo]
     else:
-        print('Comando inválido.\n')
+        resposta = codigos_respostas['400']
+        print(f'-ERR 400, {resposta}\n')
 
     return True

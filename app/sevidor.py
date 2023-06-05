@@ -2,6 +2,7 @@ import socket
 import threading
 
 from entidades.Hotel import Hotel
+from excecoes import UsuarioInexistenteException, SenhaIncorretaException
 
 TAM_MSG = 1024
 HOST = 'localhost'
@@ -28,28 +29,26 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         login = solicitacao[1]
         senha = solicitacao[2]
 
-        resposta = ''
         registrou = hotel.registrar_cliente(login, senha)
 
         if registrou:
             resposta = str.encode('+OK 200')
         else:
-            resposta = str.encode('-ERR 403')
+            resposta = str.encode('-ERR 402')
 
     elif comando == 'LOGIN' and len(solicitacao) == 3:
         usuario = solicitacao[1]
         senha = solicitacao[2]
 
-    
-        resposta = ''
-        logou = hotel.login_cliente(usuario, senha)
+        try:
+            logou = hotel.login_cliente(usuario, senha)
 
-        if logou:
-            # login do usuário com sucesso
-            resposta = str.encode('+OK 201')
-        else:
-            # Erro no login
-            resposta = str.encode('-ERR 402')
+            if logou:
+                resposta = str.encode('+OK 201')
+        except UsuarioInexistenteException:
+            resposta = str.encode('-ERR 403')
+        except SenhaIncorretaException:
+            resposta = str.encode('-ERR 404')
 
     elif comando == 'LISTAR' and len(solicitacao) == 2:
         resposta = ''
@@ -75,7 +74,7 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
 
     elif solicitacao[2].upper() == 'NUMERO' and len(solicitacao) == 5:
         pass
-       
+
     elif solicitacao[2].upper() == 'PREÇO' and len(solicitacao) == 5:
         pass
 
@@ -87,7 +86,6 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         resposta = str.encode('-ERR 400')
 
     socket_cliente.send(resposta)
-
     return True
 
 def processar_clientes(socket_cliente, endereco_cliente):
