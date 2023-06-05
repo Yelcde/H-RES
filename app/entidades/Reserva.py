@@ -9,34 +9,43 @@ class Reserva:
         self.__checkout  = checkout
 
     @property
-    def quarto (self) -> int:
+    def quarto (self) -> 'quarto':
         '''
-        Método para ter acesso ao número do quarto do hotel.
+        Método para ter acesso ao número do quarto reservado.
         
         '''
-        return self.__numero
+        return self.__quarto
     
     @property
-    def quarto (self) -> int:
+    def usuario (self) -> 'usuario':
         '''
-        Método para ter acesso ao número do quarto do hotel.
+        Método para ter acesso ao usuário que solicitou a reserva.
         
         '''
-        return self.__numero
+        return self.__usuario
 
     @property
-    def checkin (self) -> int:
+    def checkin (self) -> str:
         '''
-        Método para ter acesso à quantidade de quartos no quarto.
+        Método para ter acesso ao checkin feito na reserva.
         
         '''
-        return self.__qtd_quartos
+        return self.__checkin
 
     @property
-    def checkout (self) -> int:
+    def checkout (self) -> str:
         '''
-        Método para ter acesso à quantidade de banheiros no quarto.
+        Método para ter acesso ao checkout feito na reserva.
         
         '''
-        return self.__qtd_banheiros
+        return self.__checkout
     
+    def __eq__(self, usuario: str) -> bool:
+        return self.__usuario == usuario
+    
+    def __str__(self) -> str:
+        '''
+        Método para imprimir as informações da reserva de um quarto.
+
+        '''
+        return f"Quarto: {self.__quarto}\nUsuário: {self.__usuario}\nCheck-in: {self.__checkin}\nCheck-out: {self.__checkout}"

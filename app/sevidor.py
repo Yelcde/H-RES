@@ -2,7 +2,8 @@ import socket
 import threading
 
 from entidades.Hotel import Hotel
-from excecoes import UsuarioInexistenteException, SenhaIncorretaException
+from entidades.Quarto import Quarto
+from excecoes import UsuarioInexistenteException, SenhaIncorretaException, QuartoIndisponivel, LoginRequerido
 
 TAM_MSG = 1024
 HOST = 'localhost'
@@ -51,32 +52,31 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
             resposta = str.encode('-ERR 404')
 
     elif comando == 'LISTAR' and len(solicitacao) == 2:
-        resposta = ''
         listar = hotel.listar_quartos_disponiveis()
-        resposta = str.encode(f'+OK 207 \n{listar}')
-
-    elif comando == 'RESERVAR' and len(solicitacao) == 2:
-        usuario = solicitacao[1]
-        senha = solicitacao[2]
-
-        resposta = ''
-        # Se o usuário tiver logado = ok
-        if hotel.login_usuario(usuario, senha):
-            # se reserva acontecer
-            if hotel.reservar(usuario, quarto, chekin, checkout):
-                resposta = str.encode('+OK 203')
-            # se reserva não acontecer
-            else:
-                resposta = str.encode('+OK 405')
-        # se usuário não logado
-        else:
-            resposta = str.encode('+OK 401')
+        resposta = str.encode(f'+OK 207 {listar}')
 
     elif solicitacao[2].upper() == 'NUMERO' and len(solicitacao) == 5:
         pass
 
     elif solicitacao[2].upper() == 'PREÇO' and len(solicitacao) == 5:
         pass
+
+    elif comando == 'RESERVAR' and len(solicitacao) == 2:
+        usuario = solicitacao[1]
+
+        try:
+            # Se o usuário tiver logado = ok
+            logado = hotel.login_usuario(usuario, senha)
+            # se tiver continua aqui
+            if logado:
+                # Se a reserva acontecer
+                hotel.reservar(usuario, quarto, chekin, checkout)
+                resposta = str.encode('+OK 203')
+                # se o quarto estiver indisponível e a reserva não acontecer
+        except QuartoIndisponivel:
+            resposta = str.encode('+OK 405')
+        except LoginRequerido: # se usuário não tiver logado
+            resposta = str.encode('-ERR 401')
 
     elif comando == 'SAIR':
         return False

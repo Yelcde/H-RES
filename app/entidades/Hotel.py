@@ -1,8 +1,8 @@
 from comandos_usuario.login import login
 from comandos_usuario.registrar import registrar
-
+from comandos_hotel import listar_quarto
 from entidades.Usuario import Usuario
-
+from entidades.Quarto import *
 from estruturas.avl import AVL
 from estruturas.lista_encadeada import ListaEncadeada
 
@@ -52,13 +52,23 @@ class Hotel:
         '''
         pass
 
-    def procurar_quarto(self):
+    def procurar_quarto_preco(self):
+        '''
+        Método para procurar um quarto por seu preço.
+
+        '''
+        pass
+
+    def procurar_quarto_numero(self):
+        '''
+        Método para procurar um quarto por seu numero de identificação.
+
+        '''
         pass
 
     def listar_quartos_disponiveis(self) -> str:
         '''
-        Método para listar os quartos disponiveis dentro do hotel.
+        Método para listar todos os quartos disponiveis dentro do hotel.
 
         '''
-        listar = self.__quartos_disponiveis.__preOrdem()
-        return listar
+        return listar_quarto(self.__quartos_disponiveis)
