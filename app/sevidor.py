@@ -51,6 +51,13 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         except SenhaIncorretaException:
             resposta = str.encode('-ERR 404')
 
+    elif comando == 'DESLOGAR' and len(solicitacao) == 3:
+        try:
+            hotel.deslogar()
+            resposta = str.encode('+OK 202')
+        except LoginRequerido:
+            resposta = str.encode('+OK 411')
+
     elif comando == 'LISTAR' and len(solicitacao) == 2:
         listar = hotel.listar_quartos_disponiveis()
         resposta = str.encode(f'+OK 207 {listar}')
@@ -76,7 +83,7 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         except QuartoIndisponivel:
             resposta = str.encode('+OK 405')
         except LoginRequerido: # se usuário não tiver logado
-            resposta = str.encode('-ERR 401')
+            resposta = str.encode('-ERR 411')
 
     elif comando == 'SAIR':
         return False

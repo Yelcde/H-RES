@@ -6,11 +6,13 @@ LOGADO = False
 codigos_respostas = {
     '200': 'Usuário registrado com sucesso.',
     '201': 'Usuário logado com sucesso.',
+    '202': 'Usuário deslogado com sucesso',
     '400': 'Comando inválido.',
     '402': 'Usuário já existe.',
     '403': 'Usuário não existe.',
     '404': 'Senha incorreta.',
-    '410': 'Usuário já está logado.',
+    '411': 'Usuário não está logado',
+    '412': 'Usuário já está logado.',
 }
 
 def processa_solicitacao(socket_cliente: socket) -> bool:
@@ -48,8 +50,8 @@ def processa_solicitacao(socket_cliente: socket) -> bool:
 
         elif LOGADO and (comando == 'LOGIN') or LOGADO and (comando == 'REGISTRAR'):
             # Se o usuário estiver logado e tenta logar novamente
-            resposta = codigos_respostas['410']
-            print(f'-ERR 410, {resposta}\n')
+            resposta = codigos_respostas['412']
+            print(f'-ERR 412, {resposta}\n')
 
         # se tiver logado, envia a solicitacao ao servidor
         else:

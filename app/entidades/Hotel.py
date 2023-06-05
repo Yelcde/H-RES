@@ -3,6 +3,7 @@ from comandos_usuario.registrar import registrar
 from comandos_hotel import listar_quarto
 from entidades.Usuario import Usuario
 from entidades.Quarto import *
+from comandos_usuario import logout
 from estruturas.avl import AVL
 from estruturas.lista_encadeada import ListaEncadeada
 
@@ -14,7 +15,6 @@ class Hotel:
         self.__quartos_disponiveis = AVL()
         self.__quartos_ocupados = AVL()
         self.__clientes = ListaEncadeada()
-
         self.__carregar_usuarios()
 
     def registrar_cliente(self, login: str, senha: str) -> bool:
@@ -31,8 +31,7 @@ class Hotel:
 
     def __carregar_usuarios(self):
         '''
-        Método usado no momento que a classe é instanciada carregar os usuário
-        salvos no arquivo "usuarios.txt" na lista encadeada do Hotel.
+        Método usado no momento que a classe é instanciada com o propósito de carregar os usuário salvos no arquivo "usuarios.txt" na lista encadeada do Hotel.
         '''
         arq_usuarios = open('./app/usuarios.txt')
 
@@ -44,6 +43,14 @@ class Hotel:
             self.__clientes.append(usuario)
 
         arq_usuarios.close()
+
+    def deslogar(self)-> bool:
+        '''
+        Método para deslogar um usuário do hotel.
+
+        '''
+        return logout()
+
 
     def reservar(self, usuario:str, quarto: int, checkin: str, checkout: str):
         '''
