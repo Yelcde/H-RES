@@ -1,9 +1,8 @@
 from comandos_usuario.login import login
 from comandos_usuario.registrar import registrar
-from comandos_hotel import listar_quarto
+
 from entidades.Usuario import Usuario
-from entidades.Quarto import *
-from comandos_usuario import logout
+
 from estruturas.avl import AVL
 from estruturas.lista_encadeada import ListaEncadeada
 
@@ -29,28 +28,11 @@ class Hotel:
         '''
         return login(self.__clientes, usuario, senha)
 
-    def __carregar_usuarios(self):
-        '''
-        Método usado no momento que a classe é instanciada com o propósito de carregar os usuário salvos no arquivo "usuarios.txt" na lista encadeada do Hotel.
-        '''
-        arq_usuarios = open('./app/usuarios.txt')
-
-        usuarios = arq_usuarios.readlines()
-
-        for usuario_atual in usuarios:
-            login, senha = usuario_atual.split(':')
-            usuario = Usuario(login, senha)
-            self.__clientes.append(usuario)
-
-        arq_usuarios.close()
-
-    def deslogar(self)-> bool:
+    def deslogar(self):
         '''
         Método para deslogar um usuário do hotel.
-
         '''
-        return logout()
-
+        pass
 
     def reservar(self, usuario:str, quarto: int, checkin: str, checkout: str):
         '''
@@ -76,6 +58,21 @@ class Hotel:
     def listar_quartos_disponiveis(self) -> str:
         '''
         Método para listar todos os quartos disponiveis dentro do hotel.
-
         '''
-        return listar_quarto(self.__quartos_disponiveis)
+        pass
+
+    def __carregar_usuarios(self):
+        '''
+        Método usado no momento que a classe é instanciada com o propósito de carregar os usuário salvos no arquivo "usuarios.txt" na lista encadeada do Hotel.
+        '''
+        arq_usuarios = open('./app/usuarios.txt')
+
+        usuarios = arq_usuarios.readlines()
+
+        for usuario_atual in usuarios:
+            login, senha = usuario_atual.split(':')
+            usuario_senha = senha[:-1] # remove o \n do final da string
+            usuario = Usuario(login, usuario_senha)
+            self.__clientes.append(usuario)
+
+        arq_usuarios.close()

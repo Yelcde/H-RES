@@ -18,9 +18,8 @@ def login(lista_de_usuarios: ListaEncadeada, usuario: str, senha: str) -> bool:
         try:
             posicao = lista_de_usuarios.busca(usuario)
             usuario = lista_de_usuarios.elemento(posicao)
-            usuario_senha = usuario.senha[:-1] # remove o \n do final
 
-            if usuario_senha != senha:
+            if usuario.senha != senha:
                 raise SenhaIncorretaException()
 
             return True

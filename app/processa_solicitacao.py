@@ -11,7 +11,7 @@ codigos_respostas = {
     '402': 'Usuário já existe.',
     '403': 'Usuário não existe.',
     '404': 'Senha incorreta.',
-    '411': 'Usuário não está logado',
+    '411': 'Usuário não está logado.',
     '412': 'Usuário já está logado.',
 }
 
@@ -36,22 +36,30 @@ def processa_solicitacao(socket_cliente: socket) -> bool:
         usuario = solicitacao[1]
 
         if not LOGADO:
-            if comando == 'REGISTRAR' or comando == 'LOGIN':
+            if (comando == 'REGISTRAR' or comando == 'LOGIN'):
                 socket_cliente.send(solicitacao.encode())
                 dados = socket_cliente.recv(TAM_MSG)
 
                 status, codigo = dados.decode().split()
                 resposta = codigos_respostas[codigo]
-
                 print(f'{status} {codigo}, {resposta}\n')
 
                 if codigo == '200' or codigo == '201':
                     LOGADO = True
 
-        elif LOGADO and (comando == 'LOGIN') or LOGADO and (comando == 'REGISTRAR'):
+            else:
+                resposta = codigos_respostas['411']
+                print(f'-ERR 411, {resposta}\n')
+
+        elif (LOGADO and comando == 'LOGIN') or (LOGADO and comando == 'REGISTRAR'):
             # Se o usuário estiver logado e tenta logar novamente
             resposta = codigos_respostas['412']
             print(f'-ERR 412, {resposta}\n')
+
+        elif (LOGADO and comando == 'LOGOUT'):
+            LOGADO = False
+            resposta = codigos_respostas['202']
+            print(f'+OK 202, {resposta}\n')
 
         # se tiver logado, envia a solicitacao ao servidor
         else:

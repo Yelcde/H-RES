@@ -17,7 +17,6 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
     Retorna "True" caso tenha conseguido processar a solicitação do usuário.
     Retorna "False" caso o usuário faça o LOGOUT na aplicação.
     '''
-    # Recebe a solicitação do cliente e decodifica
     solicitacao = solicitacao.decode()
 
     print(f'Cliente {endereco_cliente} mandou: {solicitacao}')
@@ -51,7 +50,7 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         except SenhaIncorretaException:
             resposta = str.encode('-ERR 404')
 
-    elif comando == 'DESLOGAR' and len(solicitacao) == 3:
+    elif comando == 'LOGOUT' and len(solicitacao) == 3:
         try:
             hotel.deslogar()
             resposta = str.encode('+OK 202')
@@ -84,9 +83,6 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
             resposta = str.encode('+OK 405')
         except LoginRequerido: # se usuário não tiver logado
             resposta = str.encode('-ERR 411')
-
-    elif comando == 'SAIR':
-        return False
 
     # Comando errado geral inválido
     else:
