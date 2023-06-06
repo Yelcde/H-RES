@@ -1,5 +1,6 @@
 from comandos_usuario.login import login
 from comandos_usuario.registrar import registrar
+from comandos_hotel.listar import listar
 
 from entidades.Usuario import Usuario
 from entidades.Quarto import Quarto
@@ -58,11 +59,11 @@ class Hotel:
         '''
         pass
 
-    def listar_quartos_disponiveis(self) -> str:
+    def listar_quartos(self) -> str:
         '''
-        Método para listar todos os quartos disponiveis dentro do hotel.
+        Método para listar todos os quartos do hotel.
         '''
-        pass
+        return listar(self.__quartos)
 
     def __carregar_usuarios(self):
         '''
