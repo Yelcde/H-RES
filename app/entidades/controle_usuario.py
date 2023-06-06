@@ -1,18 +1,34 @@
-from threading import Lock
-
 from estruturas.lista_encadeada import ListaEncadeada, ListaException
+from excecoes import UsuarioInexistenteException, SenhaIncorretaException
 from entidades.Usuario import Usuario
 
-lock = Lock()
 
 class Controle_usuario:
     '''
     Classe responsável por controlar as ações relativas ao usuario.
     '''
-    def __init__(self, lock, lista_de_clientes):
-        pass
+    def __init__(self, lock):
+        self.__clientes = ListaEncadeada()
+        self.__lock = lock
+        self.__carregar_usuarios()
 
-    def registrar_cliente(self, login: str, senha: str) -> bool:
+    def __carregar_usuarios(self):
+        '''
+        Método usado no momento que a classe é instanciada com o propósito de carregar os usuário salvos no arquivo "usuarios.txt" na lista encadeada do Hotel.
+        '''
+        arq_usuarios = open('./app/usuarios.txt')
+
+        usuarios = arq_usuarios.readlines()
+
+        for usuario_atual in usuarios:
+            login, senha = usuario_atual.split(':')
+            usuario_senha = senha[:-1] # remove o \n do final da string
+            usuario = Usuario(login, usuario_senha)
+            self.__clientes.append(usuario)
+
+        arq_usuarios.close()
+
+    def registrar(self, login: str, senha: str) -> bool:
         '''
         Função responsável pela lógica de registrar o usuário no sistema.
 
@@ -20,9 +36,9 @@ class Controle_usuario:
         Retorna "False" se não foi possível registrar o usuário por já existir
         outro usuário com mesmo "login".
         '''
-        with lock:
+        with self.__lock:
             try:
-                lista_de_clientes.busca(login)
+                self.__clientes.busca(login)
                 return False
             except ListaException:
                 novo_usuario = f'{login}:{senha}\n'
@@ -32,11 +48,11 @@ class Controle_usuario:
                 arq_usuarios.close()
 
                 novo_usuario = Usuario(login, senha)
-                lista_de_clientes.append(novo_usuario)
+                self.__clientes.append(novo_usuario)
 
                 return True
 
-    def login_cliente(self, usuario: str, senha: str) -> bool:
+    def login(self, usuario: str, senha: str) -> bool:
         """
         Função responsável por realizar o login do usuário no sistema.
 
@@ -45,10 +61,10 @@ class Controle_usuario:
         Se o usuário não existir será lançada a exceção "UsuarioInexistenteException".
         Se a senha estiver incorreta será lançada a exceção "SenhaIncorretaException".
         """
-        with lock:
+        with self.__lock:
             try:
-                posicao = lista_de_usuarios.busca(usuario)
-                usuario = lista_de_usuarios.elemento(posicao)
+                posicao = self.__clientes.busca(usuario)
+                usuario =  self.__clientes.elemento(posicao)
 
                 if usuario.senha != senha:
                     raise SenhaIncorretaException()
