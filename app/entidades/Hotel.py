@@ -1,36 +1,28 @@
-from comandos_usuario.login import login
-from comandos_usuario.registrar import registrar
-from comandos_hotel.listar import listar
+from entidades.Controle_quartos import Controle_quartos
+from entidades.Controle_usuario import Controle_usuario
 
-from entidades.Usuario import Usuario
-from entidades.Quarto import Quarto
-
-from estruturas.avl import AVL
-from estruturas.lista_encadeada import ListaEncadeada
+Controle_usuario = Controle_usuario()
+Controle_quartos = Controle_quartos()
 
 class Hotel:
     '''
     Classe responsável por lidar com ações relativas ao hotel.
     '''
     def __init__(self):
-        self.__quartos = AVL()
-        self.__quartos_ocupados = AVL()
-        self.__clientes = ListaEncadeada()
+        pass
 
-        self.__carregar_usuarios()
-        self.__carregar_quartos()
-
+    # Comandos referente ao Controle de Usuario
     def registrar_cliente(self, login: str, senha: str) -> bool:
         '''
         Método para registrar os usuários dentro do hotel.
         '''
-        return registrar(self.__clientes, login, senha)
+        return Controle_usuario.registrar(self.__clientes, login, senha)
 
     def login_cliente(self, usuario: str, senha: str) -> bool:
         '''
         Método para realizar o login do usuário no sistema.
         '''
-        return login(self.__clientes, usuario, senha)
+        return Controle_usuario.login(self.__clientes, usuario, senha)
 
     def deslogar(self):
         '''
@@ -38,67 +30,27 @@ class Hotel:
         '''
         pass
 
-    def reservar(self, usuario:str, quarto: int, checkin: str, checkout: str):
-        '''
-        Método para reservar um quarto disponiveis dentro do hotel.
-
-        '''
-        pass
+    # Comandos referente ao Controle do Hotel
+    def reservar_quarto(self, usuario:str, quarto: int, checkin: str, checkout: str):
+        """
+        Método para reservar um quarto
+        """
+        return Controle_quartos.reservar(usuario, quarto, checkin, checkout)
 
     def procurar_quarto_preco(self):
         '''
         Método para procurar um quarto por seu preço.
-
         '''
-        pass
+        return Controle_quartos.procurar_quarto_preco()
 
     def procurar_quarto_numero(self):
         '''
         Método para procurar um quarto por seu numero de identificação.
-
         '''
-        pass
+        return Controle_quartos.procurar_quarto_numero()
 
     def listar_quartos(self) -> str:
         '''
         Método para listar todos os quartos do hotel.
         '''
-        return listar(self.__quartos)
-
-    def __carregar_usuarios(self):
-        '''
-        Método usado no momento que a classe é instanciada com o propósito de carregar os usuário salvos no arquivo "usuarios.txt" na lista encadeada do Hotel.
-        '''
-        arq_usuarios = open('./app/usuarios.txt')
-
-        usuarios = arq_usuarios.readlines()
-
-        for usuario_atual in usuarios:
-            login, senha = usuario_atual.split(':')
-            usuario_senha = senha[:-1] # remove o \n do final da string
-            usuario = Usuario(login, usuario_senha)
-            self.__clientes.append(usuario)
-
-        arq_usuarios.close()
-
-    def __carregar_quartos(self):
-        '''
-        Método usado no momento que a classe é instanciada com o propósito de carregar os quartos salvos no arquivo "quartos.txt" na AVL do Hotel.
-        '''
-
-        arq_quartos = open('./app/quartos.txt')
-        quartos = arq_quartos.readlines()[1:] # remover cabeçalho do arquivo
-
-        for quarto in quartos:
-            quarto = quarto[:-1] # remove o \n do final
-            quarto = quarto.split(':')
-
-            numero = int(quarto[0])
-            tamanho = float(quarto[1])
-            disponivel = bool(quarto[2])
-            valor_diaria = float(quarto[3])
-
-            quarto = Quarto(numero, tamanho, disponivel, valor_diaria)
-            self.__quartos.inserir(quarto)
-
-        arq_quartos.close()
+        return Controle_quartos.listar_quartos()

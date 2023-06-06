@@ -12,22 +12,6 @@ class Controle_usuario:
         self.__lock = lock
         self.__carregar_usuarios()
 
-    def __carregar_usuarios(self):
-        '''
-        Método usado no momento que a classe é instanciada com o propósito de carregar os usuário salvos no arquivo "usuarios.txt" na lista encadeada do Hotel.
-        '''
-        arq_usuarios = open('./app/usuarios.txt')
-
-        usuarios = arq_usuarios.readlines()
-
-        for usuario_atual in usuarios:
-            login, senha = usuario_atual.split(':')
-            usuario_senha = senha[:-1] # remove o \n do final da string
-            usuario = Usuario(login, usuario_senha)
-            self.__clientes.append(usuario)
-
-        arq_usuarios.close()
-
     def registrar(self, login: str, senha: str) -> bool:
         '''
         Função responsável pela lógica de registrar o usuário no sistema.
@@ -73,9 +57,24 @@ class Controle_usuario:
             except ListaException:
                 raise UsuarioInexistenteException()
 
-
     def deslogar(self):
         '''
         Método para deslogar um usuário do hotel.
         '''
         pass
+
+    def __carregar_usuarios(self):
+        '''
+        Método usado no momento que a classe é instanciada com o propósito de carregar os usuário salvos no arquivo "usuarios.txt" na lista encadeada do Hotel.
+        '''
+        arq_usuarios = open('./app/usuarios.txt')
+
+        usuarios = arq_usuarios.readlines()
+
+        for usuario_atual in usuarios:
+            login, senha = usuario_atual.split(':')
+            usuario_senha = senha[:-1] # remove o \n do final da string
+            usuario = Usuario(login, usuario_senha)
+            self.__clientes.append(usuario)
+
+        arq_usuarios.close()
