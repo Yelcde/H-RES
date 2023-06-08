@@ -1,28 +1,26 @@
-from entidades.Controle_quartos import Controle_quartos
-from entidades.Controle_usuario import Controle_usuario
-
-Controle_usuario = Controle_usuario()
-Controle_quartos = Controle_quartos()
+from entidades.Controle_Quartos import Controle_Quartos
+from app.entidades.Controle_Clientes import Controle_Clientes
 
 class Hotel:
     '''
     Classe responsável por lidar com ações relativas ao hotel.
     '''
     def __init__(self):
-        pass
+        self.__controle_clientes = Controle_Clientes()
+        self.__controle_quartos = Controle_Quartos()
 
     # Comandos referente ao Controle de Usuario
-    def registrar_cliente(self, login: str, senha: str) -> bool:
+    def registrar_cliente(self, usuario: str, senha: str) -> bool:
         '''
         Método para registrar os usuários dentro do hotel.
         '''
-        return Controle_usuario.registrar(self.__clientes, login, senha)
+        return self.__controle_clientes.registrar(usuario, senha)
 
     def login_cliente(self, usuario: str, senha: str) -> bool:
         '''
         Método para realizar o login do usuário no sistema.
         '''
-        return Controle_usuario.login(self.__clientes, usuario, senha)
+        return self.__controle_clientes.login(usuario, senha)
 
     def deslogar(self):
         '''
@@ -31,26 +29,26 @@ class Hotel:
         pass
 
     # Comandos referente ao Controle do Hotel
-    def reservar_quarto(self, usuario:str, quarto: int, checkin: str, checkout: str):
+    def reservar_quarto(self, usuario: str, quarto: int, checkin: str, checkout: str):
         """
         Método para reservar um quarto
         """
-        return Controle_quartos.reservar(usuario, quarto, checkin, checkout)
+        return self.__controle_quartos.reservar(usuario, quarto, checkin, checkout)
 
     def procurar_quarto_preco(self):
         '''
         Método para procurar um quarto por seu preço.
         '''
-        return Controle_quartos.procurar_quarto_preco()
+        return self.__controle_quartos.procurar_quarto_preco()
 
     def procurar_quarto_numero(self):
         '''
         Método para procurar um quarto por seu numero de identificação.
         '''
-        return Controle_quartos.procurar_quarto_numero()
+        return self.__controle_quartos.procurar_quarto_numero()
 
     def listar_quartos(self) -> str:
         '''
         Método para listar todos os quartos do hotel.
         '''
-        return Controle_quartos.listar_quartos()
+        return self.__controle_quartos.listar_quartos()

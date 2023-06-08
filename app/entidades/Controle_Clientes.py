@@ -1,15 +1,17 @@
+from threading import Lock
+
 from estruturas.lista_encadeada import ListaEncadeada, ListaException
 from excecoes import UsuarioInexistenteException, SenhaIncorretaException
 from entidades.Usuario import Usuario
 
-
-class Controle_usuario:
+class Controle_Clientes:
     '''
-    Classe responsável por controlar as ações relativas ao usuario.
+    Classe responsável por controlar as ações relativas aos usuarios.
     '''
-    def __init__(self, lock):
+    def __init__(self):
         self.__clientes = ListaEncadeada()
-        self.__lock = lock
+        self.__lock = Lock()
+
         self.__carregar_usuarios()
 
     def registrar(self, login: str, senha: str) -> bool:

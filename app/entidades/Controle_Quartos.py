@@ -1,48 +1,56 @@
+from threading import Lock
+
 from entidades.Quarto import Quarto
 from estruturas.avl import AVL
-from comandos_hotel.listar import listar
 
-class Controle_quartos:
+class Controle_Quartos:
     '''
-    Classe responsável por controlar as ações relativas ao hotel.
+    Classe responsável por controlar as ações relativas aos quartos.
     '''
-    def __init__(self, lock, lista_de_quartos):
+    def __init__(self):
+        self.__lock = Lock()
         self.__quartos = AVL()
         self.__quartos_ocupados = AVL()
-        self.__carregar_quartos()
 
+        self.__carregar_quartos()
 
     def reservar(self, usuario:str, quarto: int, checkin: str, checkout: str):
         '''
         Método para reservar um quarto disponiveis dentro do hotel.
-
         '''
         pass
-
 
     def procurar_quarto_preco(self):
         '''
         Método para procurar um quarto por seu preço.
-
         '''
         pass
-
 
     def procurar_quarto_numero(self):
         '''
         Método para procurar um quarto por seu numero de identificação.
-
         '''
         pass
 
-
     def listar_quartos(self) -> str:
         '''
-        Método para listar todos os quartos do hotel.
-        '''
-        return listar(self.__quartos)
+        Função responsável por fazer a listagem de todos os quartos do hotel.
 
-    
+        Irá retornar uma string de quartos. Cada quarto terá suas informações agrupadas
+        por colchetes ([]). Cada informação será separada por vírgula (,).
+        '''
+        with self.__lock:
+            quartos = ''
+
+            for i in range(1, len(self.__quartos) + 1):
+                no = self.__quartos.busca(i)
+                quarto = no.carga
+
+                disponivel = int(quarto.disponivel) # 0 -> False, 1 -> True
+                quartos += f'[{quarto.numero},{quarto.tamanho},{disponivel},{quarto.valor_diaria}]'
+
+            return quartos
+
     def __carregar_quartos(self):
         '''
         Método usado no momento que a classe é instanciada com o propósito de carregar os quartos salvos no arquivo "quartos.txt" na AVL do Hotel.
