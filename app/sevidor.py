@@ -25,6 +25,7 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
     comando = solicitacao[0].upper()
     resposta = ''
 
+    # Comando de registrar
     if comando == 'REGISTRAR' and len(solicitacao) == 3:
         login = solicitacao[1]
         senha = solicitacao[2]
@@ -36,6 +37,7 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         else:
             resposta = str.encode('-ERR 402')
 
+    # Comando de Login
     elif comando == 'LOGIN' and len(solicitacao) == 3:
         usuario = solicitacao[1]
         senha = solicitacao[2]
@@ -50,6 +52,7 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         except SenhaIncorretaException:
             resposta = str.encode('-ERR 404')
 
+    # Comando de Logout
     elif comando == 'LOGOUT' and len(solicitacao) == 3:
         try:
             hotel.deslogar()
@@ -57,15 +60,20 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         except LoginRequerido:
             resposta = str.encode('+OK 411')
 
+    # Comando de Listar
     elif comando == 'LISTAR' and len(solicitacao) == 2:
-        listar = hotel.listar_quartos_disponiveis()
+        listar = hotel.listar_quartos()
         resposta = str.encode(f'+OK 207 {listar}')
 
+    # Listar quartos disponiveis por número
     elif solicitacao[2].upper() == 'NUMERO' and len(solicitacao) == 5:
-        pass
+        try:
+            listar = hotel.procurar_quarto_preco()
 
+    # Listar quartos disponiveis por preço
     elif solicitacao[2].upper() == 'PREÇO' and len(solicitacao) == 5:
-        pass
+        listar = hotel.procurar_quarto_preco()
+        resposta = str.encode(f'+OK 207 {listar}')
 
     elif comando == 'RESERVAR' and len(solicitacao) == 2:
         usuario = solicitacao[1]

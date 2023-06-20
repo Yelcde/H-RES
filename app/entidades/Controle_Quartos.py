@@ -20,17 +20,30 @@ class Controle_Quartos:
         '''
         pass
 
-    def procurar_quarto_preco(self):
+    def procurar_quarto_preco(self, preco):
         '''
         Método para procurar um quarto por seu preço.
         '''
-        pass
+        with self.__lock:
+            quartos = ''
 
-    def procurar_quarto_numero(self):
+            for i in range(1, len(self.__quartos) + 1):
+                no = self.__quartos.busca(i)
+                quarto = no.carga
+                if quarto.valor_diaria <= preco:
+                    disponivel = int(quarto.disponivel) # 0 -> False, 1 -> True
+                    quartos += f'[{quarto.numero},{quarto.tamanho},{disponivel},{quarto.valor_diaria}]'
+
+            return quartos
+
+    def procurar_quarto_numero(self, numero_quarto):
         '''
         Método para procurar um quarto por seu numero de identificação.
         '''
-        pass
+        no = self.__quartos.busca(numero_quarto)
+        if no == None:
+            f'{raiseException()} ou {}
+
 
     def listar_quartos(self) -> str:
         '''
