@@ -20,7 +20,7 @@ class Controle_Quartos:
         '''
         pass
 
-    def procurar_quarto_preco(self, preco):
+    def procurar_quarto_preco(self, preco) -> any:
         '''
         Método para procurar um quarto por seu preço.
         '''
@@ -36,14 +36,14 @@ class Controle_Quartos:
 
             return quartos
 
-    def procurar_quarto_numero(self, numero_quarto):
+    def procurar_quarto_numero(self, numero_quarto) -> any:
         '''
         Método para procurar um quarto por seu numero de identificação.
+        Caso o objeto seja encontrado na árvore, returna a carga do objeto.
+        Se não, retorna 
         '''
-        no = self.__quartos.busca(numero_quarto)
-        if no == None:
-            f'{raiseException()} ou {}
-
+        dados_quarto_procurado = self.__quartos.busca(numero_quarto)
+        return dados_quarto_procurado
 
     def listar_quartos(self) -> str:
         '''

@@ -7,12 +7,16 @@ codigos_respostas = {
     '200': 'Usuário registrado com sucesso.',
     '201': 'Usuário logado com sucesso.',
     '202': 'Usuário deslogado com sucesso',
+    '207': 'Lista acessada',
+    '211': 'Quarto encontrado',
     '400': 'Comando inválido.',
     '402': 'Usuário já existe.',
     '403': 'Usuário não existe.',
     '404': 'Senha incorreta.',
     '411': 'Usuário não está logado.',
     '412': 'Usuário já está logado.',
+    '413': 'Quarto Inexistente.',
+    '414': 'O preço precisa ser um valor positivo.',
 }
 
 def processa_solicitacao(socket_cliente: socket) -> bool:

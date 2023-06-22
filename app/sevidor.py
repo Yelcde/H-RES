@@ -3,7 +3,7 @@ import threading
 
 from entidades.Hotel import Hotel
 from entidades.Quarto import Quarto
-from excecoes import UsuarioInexistenteException, SenhaIncorretaException, QuartoIndisponivel, LoginRequerido
+from excecoes import UsuarioInexistenteException, SenhaIncorretaException, QuartoIndisponivel, LoginRequerido, QuartoInexistenteException, PrecoNegativo
 
 TAM_MSG = 1024
 HOST = 'localhost'
@@ -60,22 +60,28 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         except LoginRequerido:
             resposta = str.encode('+OK 411')
 
-    # Comando de Listar
     elif comando == 'LISTAR' and len(solicitacao) == 2:
         listar = hotel.listar_quartos()
         resposta = str.encode(f'+OK 207 {listar}')
 
-    # Listar quartos disponiveis por número
-    elif solicitacao[2].upper() == 'NUMERO' and len(solicitacao) == 5:
+    elif comando == 'PROCURAR' and len(solicitacao) == 2:
+        quarto = solicitacao[1]
         try:
-            listar = hotel.procurar_quarto_preco()
+            procurar_quarto = hotel.procurar_quarto_numero(quarto)
+            resposta = str.encode(f'+OK 211 {procurar_quarto}' )
 
-    # Listar quartos disponiveis por preço
-    elif solicitacao[2].upper() == 'PREÇO' and len(solicitacao) == 5:
-        listar = hotel.procurar_quarto_preco()
-        resposta = str.encode(f'+OK 207 {listar}')
+        except QuartoInexistenteException:
+            resposta = str.encode(f"-ERR 413")
 
-    elif comando == 'RESERVAR' and len(solicitacao) == 2:
+    elif comando == 'PREÇO' and len(solicitacao) == 2:
+        preco = solicitacao[1]
+        if preco < 0:
+            resposta = str.encode(f"-ERR 414")
+        
+        listar_quartos_preco = hotel.procurar_quarto_preco(preco)
+        resposta = str.encode(f'+OK 207 {listar_quartos_preco}')
+
+    elif comando == 'RESERVAR':
         usuario = solicitacao[1]
 
         try:
