@@ -96,7 +96,7 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
             # se tiver continua aqui
             if logado:
                 # Se a reserva acontecer
-                hotel.reservar(usuario, quarto, chekin, checkout)
+                #hotel.reservar(usuario, quarto, chekin, checkout)
                 resposta = str.encode('+OK 203')
                 # se o quarto estiver indisponível e a reserva não acontecer
         except QuartoIndisponivel:

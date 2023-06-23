@@ -37,9 +37,7 @@ class Controle_Quartos:
                     disponivel = int(quarto.disponivel) # 0 -> False, 1 -> True
                     quartos += f'[{quarto.numero},{quarto.tamanho},{disponivel},{quarto.valor_diaria}]'
             return quartos
-
         
-
     def procurar_quarto_numero(self, numero_quarto) -> any:
         '''
         Método para procurar um quarto por seu numero de identificação.
