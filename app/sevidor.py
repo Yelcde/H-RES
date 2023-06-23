@@ -2,11 +2,10 @@ import socket
 import threading
 
 from entidades.Hotel import Hotel
-from entidades.Quarto import Quarto
 from excecoes import UsuarioInexistenteException, SenhaIncorretaException, QuartoIndisponivel, LoginRequerido, QuartoInexistenteException, PrecoNegativo
 
+HOST = '0.0.0.0'
 TAM_MSG = 1024
-HOST = 'localhost'
 PORT = 50000
 
 def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
@@ -77,7 +76,7 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         preco = solicitacao[1]
         if preco < 0:
             resposta = str.encode(f"-ERR 414")
-        
+
         listar_quartos_preco = hotel.procurar_quarto_preco(preco)
         resposta = str.encode(f'+OK 207 {listar_quartos_preco}')
 
