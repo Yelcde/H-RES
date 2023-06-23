@@ -2,6 +2,7 @@ from threading import Lock
 
 from entidades.Quarto import Quarto
 from estruturas.avl import AVL
+from excecoes import QuartoIndisponivel, QuartoInexistenteException, PrecoNegativo
 
 class Controle_Quartos:
     '''
@@ -24,26 +25,34 @@ class Controle_Quartos:
         '''
         Método para procurar um quarto por seu preço.
         '''
+    
         with self.__lock:
+            
+            assert preco > 0
             quartos = ''
-
             for i in range(1, len(self.__quartos) + 1):
                 no = self.__quartos.busca(i)
                 quarto = no.carga
                 if quarto.valor_diaria <= preco:
                     disponivel = int(quarto.disponivel) # 0 -> False, 1 -> True
                     quartos += f'[{quarto.numero},{quarto.tamanho},{disponivel},{quarto.valor_diaria}]'
-
             return quartos
+
+        
 
     def procurar_quarto_numero(self, numero_quarto) -> any:
         '''
         Método para procurar um quarto por seu numero de identificação.
-        Caso o objeto seja encontrado na árvore, returna a carga do objeto.
-        Se não, retorna 
         '''
-        dados_quarto_procurado = self.__quartos.busca(numero_quarto)
-        return dados_quarto_procurado
+        for i in range(1, len(self.__quartos) + 1):
+            if quarto.numero == numero_quarto:
+                if quarto.disponivel is True:
+                    return quarto
+                raise QuartoIndisponivel()
+            no = self.__quartos.busca(i)
+            quarto = no.carga
+            
+        raise QuartoInexistenteException()
 
     def listar_quartos(self) -> str:
         '''

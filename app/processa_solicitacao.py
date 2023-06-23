@@ -17,6 +17,7 @@ codigos_respostas = {
     '412': 'Usuário já está logado.',
     '413': 'Quarto Inexistente.',
     '414': 'O preço precisa ser um valor positivo.',
+    '415': 'Quarto indiponível.'
 }
 
 def processa_solicitacao(socket_cliente: socket) -> bool:

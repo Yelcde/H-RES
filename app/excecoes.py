@@ -17,3 +17,7 @@ class QuartoIndisponivel(Exception):
 class LoginRequerido(Exception):
     def __init__(self):
         super().__init__('É necessário está logado para realizar essa ação.')
+        
+class PrecoNegativo(Exception):
+    def __init__(self):
+        super().__init__('O preço precisa ser um valor positivo.')
