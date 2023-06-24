@@ -27,6 +27,7 @@ codigos_respostas = {
     '412': 'Usuário já está logado.',
     '413': 'Quarto Inexistente.',
     '414': 'O preço precisa ser um valor positivo.',
+    '415': 'Quarto indiponível.'
 }
 
 def processa_solicitacao(socket_cliente) -> bool:
@@ -91,8 +92,6 @@ def processa_solicitacao(socket_cliente) -> bool:
     else:
         resposta = codigos_respostas['400']
         print(f'-ERR 400, {resposta}\n')
-
-    return True
 
 print('=' * 39)
 print('🏨 H-RES | Sistema de reservas de Hotel')
