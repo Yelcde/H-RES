@@ -61,12 +61,8 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
             resposta = str.encode('+OK 411')
 
     elif comando == 'LISTAR' and len(solicitacao) == 2:
-        try:
-            listar = hotel.listar_quartos()
-            resposta = str.encode(f'+OK 207 {listar}')
-
-        except PrecoNegativo:
-            resposta = str.encode(f"-ERR 414")
+        quartos = hotel.listar_quartos()
+        resposta = str.encode(f'+OK 207 {quartos}')
 
     elif comando == 'PROCURAR' and len(solicitacao) == 2:
         quarto = solicitacao[1]
@@ -79,11 +75,11 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         except QuartoIndisponivel:
             resposta = str.encode(f"-ERR 415")
 
-    elif comando == 'PREÇO' and len(solicitacao) == 2:
+    elif comando == 'PRECO' and len(solicitacao) == 2:
         preco = solicitacao[1]
         try:
-            listar_quartos_preco = hotel.procurar_quarto_preco(preco)
-            resposta = str.encode(f'+OK 207 {listar_quartos_preco}')
+            quartos = hotel.procurar_quarto_preco(preco)
+            resposta = str.encode(f'+OK 207 {quartos}')
         except PrecoNegativo:
             resposta = str.encode(f"-ERR 414")
 

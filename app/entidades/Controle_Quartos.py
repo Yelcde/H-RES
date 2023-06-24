@@ -9,9 +9,10 @@ class Controle_Quartos:
     Classe responsável por controlar as ações relativas aos quartos.
     '''
     def __init__(self):
-        self.__lock = Lock()
+        self.__mutex_quartos = Lock()
+        self.__mutex_reservas = Lock()
         self.__quartos = AVL()
-        self.__quartos_ocupados = AVL()
+        self.__reservas = AVL()
 
         self.__carregar_quartos()
 
@@ -21,36 +22,37 @@ class Controle_Quartos:
         '''
         pass
 
-    def procurar_quarto_preco(self, preco) -> any:
+    def listar_quartos_preco(self, preco_max: float) -> str:
         '''
-        Método para procurar um quarto por seu preço.
+        Método para listar os quartos com valor da diária
+        abaixo do preço informado.
         '''
-    
-        with self.__lock:
-            
-            assert preco > 0
+        with self.__mutex_quartos:
+            if (preco_max > 0):
+                raise PrecoNegativo()
+
             quartos = ''
+
             for i in range(1, len(self.__quartos) + 1):
-                no = self.__quartos.busca(i)
-                quarto = no.carga
-                if quarto.valor_diaria <= preco:
-                    disponivel = int(quarto.disponivel) # 0 -> False, 1 -> True
-                    quartos += f'[{quarto.numero},{quarto.tamanho},{disponivel},{quarto.valor_diaria}]'
+                quarto = self.__quartos.busca(i).carga
+
+                if quarto.valor_diaria <= preco_max:
+                    quartos += f'[{quarto.numero},{quarto.tamanho},{quarto.disponivel},{quarto.valor_diaria}]'
+
             return quartos
-        
-    def procurar_quarto_numero(self, numero_quarto) -> any:
+
+    def procurar_quarto_numero(self, numero_quarto: int) -> str:
         '''
         Método para procurar um quarto por seu numero de identificação.
         '''
-        for i in range(1, len(self.__quartos) + 1):
-            if quarto.numero == numero_quarto:
-                if quarto.disponivel is True:
-                    return quarto
-                raise QuartoIndisponivel()
-            no = self.__quartos.busca(i)
-            quarto = no.carga
-            
-        raise QuartoInexistenteException()
+        quarto = self.__quartos.busca(numero_quarto).carga
+
+        if (quarto is None):
+            raise QuartoInexistenteException()
+        elif (not quarto.disponivel):
+            raise QuartoIndisponivel()
+
+        return quarto
 
     def listar_quartos(self) -> str:
         '''
@@ -59,21 +61,19 @@ class Controle_Quartos:
         Irá retornar uma string de quartos. Cada quarto terá suas informações agrupadas
         por colchetes ([]). Cada informação será separada por vírgula (,).
         '''
-        with self.__lock:
+        with self.__mutex_quartos:
             quartos = ''
 
             for i in range(1, len(self.__quartos) + 1):
-                no = self.__quartos.busca(i)
-                quarto = no.carga
-
-                disponivel = int(quarto.disponivel) # 0 -> False, 1 -> True
-                quartos += f'[{quarto.numero},{quarto.tamanho},{disponivel},{quarto.valor_diaria}]'
+                quarto = self.__quartos.busca(i).carga
+                quartos += f'[{quarto.numero},{quarto.tamanho},{quarto.disponivel},{quarto.valor_diaria}]'
 
             return quartos
 
     def __carregar_quartos(self):
         '''
-        Método usado no momento que a classe é instanciada com o propósito de carregar os quartos salvos no arquivo "quartos.txt" na AVL do Hotel.
+        Método usado no momento que a classe é instanciada com o propósito de
+        carregar os quartos salvos no arquivo "quartos.txt" na AVL do Hotel.
         '''
 
         arq_quartos = open('./app/quartos.txt')
