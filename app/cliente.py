@@ -1,5 +1,7 @@
+import curses
 import socket
 import sys
+
 
 HOST = 'localhost'
 PORTA = 50000
