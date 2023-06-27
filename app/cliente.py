@@ -29,6 +29,7 @@ codigos_respostas = {
     '412': 'Usuário já está logado.',
     '413': 'Quarto Inexistente.',
     '414': 'O preço precisa ser um valor positivo.',
+    '415': 'Quarto indiponível.'
 }
 
 def processa_solicitacao(socket_cliente) -> bool:
@@ -58,24 +59,24 @@ def processa_solicitacao(socket_cliente) -> bool:
 
                 status, codigo = dados.decode().split()
                 resposta = codigos_respostas[codigo]
-                print(f'{status} {codigo}, {resposta}\n')
+                print(f'H-RES <<< {status} {codigo}, {resposta}\n')
 
                 if codigo == '200' or codigo == '201':
                     LOGADO = True
 
             else:
                 resposta = codigos_respostas['411']
-                print(f'-ERR 411, {resposta}\n')
+                print(f'H-RES <<< -ERR 411, {resposta}\n')
 
         elif (LOGADO and comando == 'LOGIN') or (LOGADO and comando == 'REGISTRAR'):
             # Se o usuário estiver logado e tenta logar novamente
             resposta = codigos_respostas['412']
-            print(f'-ERR 412, {resposta}\n')
+            print(f'H-RES <<< -ERR 412, {resposta}\n')
 
         elif (LOGADO and comando == 'LOGOUT'):
             LOGADO = False
             resposta = codigos_respostas['202']
-            print(f'+OK 202, {resposta}\n')
+            print(f'H-RES <<< +OK 202, {resposta}\n')
 
         # se tiver logado, envia a solicitacao ao servidor
         else:
@@ -92,8 +93,7 @@ def processa_solicitacao(socket_cliente) -> bool:
             resposta = codigos_respostas[codigo]
     else:
         resposta = codigos_respostas['400']
-        print(f'-ERR 400, {resposta}\n')
-
+        print(f'H-RES <<< -ERR 400, {resposta}\n')
     return True
 
 print('=' * 39)

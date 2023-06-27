@@ -1,5 +1,5 @@
 from entidades.Controle_Quartos import Controle_Quartos
-from app.entidades.Controle_Clientes import Controle_Clientes
+from entidades.Controle_Clientes import Controle_Clientes
 
 class Hotel:
     '''
@@ -35,17 +35,17 @@ class Hotel:
         """
         return self.__controle_quartos.reservar(usuario, quarto, checkin, checkout)
 
-    def procurar_quarto_preco(self):
+    def listar_quartos_preco(self, preco_max: float):
         '''
-        Método para procurar um quarto por seu preço.
+        Método para listar os quartos com valor da diária abaixo do preço informado.
         '''
-        return self.__controle_quartos.procurar_quarto_preco()
+        return self.__controle_quartos.listar_quartos_preco(preco_max)
 
-    def procurar_quarto_numero(self):
+    def procurar_quarto_numero(self, numero_quarto: int):
         '''
         Método para procurar um quarto por seu numero de identificação.
         '''
-        return self.__controle_quartos.procurar_quarto_numero()
+        return self.__controle_quartos.procurar_quarto_numero(numero_quarto)
 
     def listar_quartos(self) -> str:
         '''
