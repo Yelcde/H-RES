@@ -1,20 +1,15 @@
-from threading import Lock
-
-from estruturas.lista_encadeada import ListaEncadeada, ListaException
-from excecoes import UsuarioInexistenteException, SenhaIncorretaException
 from entidades.Usuario import Usuario
+from excecoes import SenhaIncorretaException, UsuarioInexistenteException
+
 
 class Controle_Clientes:
     '''
     Classe responsável por controlar as ações relativas aos usuarios.
     '''
-    def __init__(self):
-        self.__clientes = ListaEncadeada()
-        self.__lock = Lock()
+    def __init__(self, repositorio_clientes):
+        self.__repositorio_clientes = repositorio_clientes
 
-        self.__carregar_usuarios()
-
-    def registrar(self, login: str, senha: str) -> bool:
+    def registrar(self, lock_clientes, login: str, senha: str) -> bool:
         '''
         Função responsável pela lógica de registrar o usuário no sistema.
 
@@ -22,7 +17,7 @@ class Controle_Clientes:
         Retorna "False" se não foi possível registrar o usuário por já existir
         outro usuário com mesmo "login".
         '''
-        with self.__lock:
+        with self.__lock_clientes:
             try:
                 self.__clientes.busca(login)
                 return False
@@ -34,7 +29,7 @@ class Controle_Clientes:
                 arq_usuarios.close()
 
                 novo_usuario = Usuario(login, senha)
-                self.__clientes.append(novo_usuario)
+                self.__repositorio_clientes.salvar_cliente(novo_usuario)
 
                 return True
 
@@ -65,18 +60,3 @@ class Controle_Clientes:
         '''
         pass
 
-    def __carregar_usuarios(self):
-        '''
-        Método usado no momento que a classe é instanciada com o propósito de carregar os usuário salvos no arquivo "usuarios.txt" na lista encadeada do Hotel.
-        '''
-        arq_usuarios = open('./app/usuarios.txt')
-
-        usuarios = arq_usuarios.readlines()
-
-        for usuario_atual in usuarios:
-            login, senha = usuario_atual.split(':')
-            usuario_senha = senha[:-1] # remove o \n do final da string
-            usuario = Usuario(login, usuario_senha)
-            self.__clientes.append(usuario)
-
-        arq_usuarios.close()

@@ -2,7 +2,9 @@ from threading import Lock
 
 from entidades.Quarto import Quarto
 from estruturas.avl import AVL
-from excecoes import QuartoIndisponivel, QuartoInexistenteException, PrecoNegativo
+from excecoes import (PrecoNegativo, QuartoIndisponivel,
+                      QuartoInexistenteException)
+
 
 class Controle_Quartos:
     '''
