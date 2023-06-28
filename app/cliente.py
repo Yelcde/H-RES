@@ -17,7 +17,6 @@ codigos_respostas = {
     '200': 'Usuário registrado com sucesso.',
     '201': 'Usuário logado com sucesso.',
     '202': 'Usuário deslogado com sucesso.',
-    '207': 'Lista acessada.',
     '211': 'Quarto encontrado.',
     '400': 'Comando inválido.',
     '402': 'Usuário já existe.',
@@ -71,13 +70,29 @@ def processa_solicitacao(socket_cliente) -> bool:
             resposta = codigos_respostas['412']
             print(f'H-RES <<< -ERR 412, {resposta}\n')
 
+
+        elif LOGADO and comando == 'LISTAR':
+            # decodifica a solicitação e salva numa variável em dados
+            dados = socket_cliente.recv(TAM_MSG)
+            # pega a lista de quartos e decodifica tirando o status, codigo
+            status, codigo, lista_quartos = dados.decode().split()
+            # da um split no listar quartos separando os elementos do quarto
+            lista = lista_quartos.split('/')
+
+            quartos = ''
+            for i in range(len(lista_quartos)):
+                quartos += print(f'{lista_quartos[i]}')
+            
+            return quartos
+
+
+        elif LOGADO and comando == 'PROCURAR':
+            pass
+
         elif (LOGADO and comando == 'LOGOUT'):
             LOGADO = False
             resposta = codigos_respostas['202']
             print(f'H-RES <<< +OK 202, {resposta}\n')
-
-        elif LOGADO and (comando == 'LISTAR' or comando == 'PROCURAR') :
-            pass
 
         # se tiver logado, envia a solicitacao ao servidor
         else:

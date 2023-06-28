@@ -59,14 +59,14 @@ class Controle_Quartos:
         Função responsável por fazer a listagem de todos os quartos do hotel.
 
         Irá retornar uma string de quartos. Cada quarto terá suas informações agrupadas
-        por colchetes ([]). Cada informação será separada por vírgula (,).
+        por colchetes (/). Cada informação será separada por vírgula (,).
         '''
         with self.__mutex_quartos:
             quartos = ''
 
             for i in range(1, len(self.__quartos) + 1):
-                quarto = self.__quartos.busca(i).carga
-                quartos += f'[{quarto.numero},{quarto.tamanho},{quarto.disponivel},{quarto.valor_diaria}]'
+                quarto = self.__quartos.busca(i)
+                quartos += f'/{quarto.numero},{quarto.tamanho},{quarto.disponivel},{quarto.valor_diaria}/'
 
             return quartos
 
