@@ -78,6 +78,9 @@ def processa_solicitacao(socket_cliente) -> bool:
             resposta = codigos_respostas['202']
             print(f'H-RES <<< +OK 202, {resposta}\n')
 
+        elif LOGADO and (comando == 'LISTAR' or comando == 'PROCURAR') :
+            pass
+
         # se tiver logado, envia a solicitacao ao servidor
         else:
             solicitacao += ' ' + usuario # envia para o servidor com o seu usuario marcando que é ele.

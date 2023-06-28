@@ -45,7 +45,7 @@ class Controle_Quartos:
         '''
         Método para procurar um quarto por seu numero de identificação.
         '''
-        quarto = self.__quartos.busca(numero_quarto).carga
+        quarto = self.__quartos.busca(numero_quarto)
 
         if (quarto is None):
             raise QuartoInexistenteException()

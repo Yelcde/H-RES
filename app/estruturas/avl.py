@@ -55,6 +55,7 @@ class AVL:
         if (self.__raiz != None):
             carga = self.__busca_dado(chave, self.__raiz)
             return carga
+        return None
 
     def __busca_dado(self, chave: any, no: No) -> No:
         if (chave == no.carga):
