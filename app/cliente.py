@@ -1,7 +1,5 @@
-import curses
 import socket
 import sys
-
 
 HOST = 'localhost'
 PORTA = 50000
@@ -18,9 +16,9 @@ elif len(sys.argv) == 3:
 codigos_respostas = {
     '200': 'Usuário registrado com sucesso.',
     '201': 'Usuário logado com sucesso.',
-    '202': 'Usuário deslogado com sucesso',
-    '207': 'Lista acessada',
-    '211': 'Quarto encontrado',
+    '202': 'Usuário deslogado com sucesso.',
+    '207': 'Lista acessada.',
+    '211': 'Quarto encontrado.',
     '400': 'Comando inválido.',
     '402': 'Usuário já existe.',
     '403': 'Usuário não existe.',
