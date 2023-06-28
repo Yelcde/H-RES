@@ -1,20 +1,28 @@
-from entidades.Controle_Quartos import Controle_Quartos
+from threading import Lock
+
 from entidades.Controle_Clientes import Controle_Clientes
+from entidades.Controle_Quartos import Controle_Quartos
+from entidades.Repositorio_Clientes import Repositorio_Clientes
+
 
 class Hotel:
     '''
     Classe responsável por lidar com ações relativas ao hotel.
     '''
     def __init__(self):
-        self.__controle_clientes = Controle_Clientes()
-        self.__controle_quartos = Controle_Quartos()
+        repositorio_clientes = Repositorio_Clientes()
+
+        self.__lock_clientes = Lock()
+        self.__lock_quartos = Lock()
+        self.__controle_clientes = Controle_Clientes(repositorio_clientes)
+        self.__controle_quartos = Controle_Quartos(repositorio_clientes)
 
     # Comandos referente ao Controle de Usuario
     def registrar_cliente(self, usuario: str, senha: str) -> bool:
         '''
         Método para registrar os usuários dentro do hotel.
         '''
-        return self.__controle_clientes.registrar(usuario, senha)
+        return self.__controle_clientes.registrar(self.__lock_clientes, usuario, senha)
 
     def login_cliente(self, usuario: str, senha: str) -> bool:
         '''
