@@ -1,7 +1,7 @@
 from entidades.Repositorio_Clientes import Repositorio_Clientes
 from entidades.Repositorio_Quartos import Repositorio_Quartos
-from estruturas.avl import AVL
-from excecoes import PrecoNegativo, QuartoIndisponivel, QuartoInexistenteException
+from estruturas.lista_encadeada import ListaException
+from excecoes import PrecoNegativo, QuartoIndisponivelException, QuartoInexistenteException, UsuarioInexistenteException
 
 class Controle_Quartos:
     '''
@@ -11,11 +11,27 @@ class Controle_Quartos:
         self.__repositorio_clientes = repositorio_clientes
         self.__repositorio_quartos = repositorio_quartos
 
-    def reservar(self, lock_quartos, lock_clientes, nome_usuario: str, quarto: int, checkin: str, checkout: str):
+    def reservar(self, lock_quartos, lock_clientes, nome_usuario: str, numero_quarto: int, checkin: str, checkout: str):
         '''
         Método para reservar um quarto disponiveis dentro do hotel.
         '''
-        pass
+        with lock_quartos:
+            with lock_clientes:
+                try:
+                    self.__repositorio_clientes.buscar_por_nome(nome_usuario)
+
+                    quarto = self.__repositorio_quartos.buscar(numero_quarto)
+
+                    if (quarto is None):
+                        raise QuartoInexistenteException()
+
+                    if (not quarto.disponivel):
+                        raise QuartoIndisponivelException()
+
+                    # Validar datas
+                except ListaException:
+                    raise UsuarioInexistenteException()
+
 
 
     def listar_quartos_preco(self, lock_quartos, preco_max: float) -> str:
@@ -47,7 +63,7 @@ class Controle_Quartos:
             if (quarto is None):
                 raise QuartoInexistenteException()
             elif (not quarto.disponivel):
-                raise QuartoIndisponivel()
+                raise QuartoIndisponivelException()
 
             return quarto
 

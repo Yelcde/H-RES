@@ -2,7 +2,7 @@ import socket
 import threading
 
 from entidades.Hotel import Hotel
-from excecoes import UsuarioInexistenteException, SenhaIncorretaException, QuartoIndisponivel, LoginRequerido, QuartoInexistenteException, PrecoNegativo
+from excecoes import UsuarioInexistenteException, SenhaIncorretaException, QuartoIndisponivelException, LoginRequerido, QuartoInexistenteException, PrecoNegativo
 
 TAM_MSG = 1024
 HOST = 'localhost'
@@ -68,7 +68,7 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
 
         except QuartoInexistenteException:
             resposta = str.encode(f"-ERR 413")
-        except QuartoIndisponivel:
+        except QuartoIndisponivelException:
             resposta = str.encode(f"-ERR 415")
 
     elif comando == 'PRECO' and len(solicitacao) == 2:
@@ -88,7 +88,9 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         try:
             hotel.reservar_quarto(nome_usuario, numero_quarto, data_checkin, data_checkout)
             resposta = str.encode('+OK 203')
-        except QuartoIndisponivel:
+        except UsuarioInexistenteException:
+            resposta = str.encode('-ERR 403')
+        except QuartoIndisponivelException:
             resposta = str.encode('-ERR 415')
         except QuartoInexistenteException:
             resposta = str.encode('-ERR 413')
