@@ -17,6 +17,7 @@ codigos_respostas = {
     '200': 'Usuário registrado com sucesso.',
     '201': 'Usuário logado com sucesso.',
     '202': 'Usuário deslogado com sucesso.',
+    '203': 'Quarto reservado com sucesso.',
     '211': 'Quarto encontrado.',
     '400': 'Comando inválido.',
     '402': 'Usuário já existe.',
@@ -82,7 +83,7 @@ def processa_solicitacao(socket_cliente) -> bool:
             quartos = ''
             for i in range(len(lista_quartos)):
                 quartos += print(f'{lista_quartos[i]}')
-            
+
             return quartos
 
 
