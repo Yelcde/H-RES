@@ -77,17 +77,16 @@ def processa_solicitacao(socket_cliente) -> bool:
             # pega a lista de quartos e decodifica tirando o status, codigo
             status, codigo, lista_quartos = dados.decode().split()
             # da um split no listar quartos separando os elementos do quarto
-            lista = lista_quartos.split('/')
-
-            quartos = ''
-            for i in range(len(lista_quartos)):
-                quartos += print(f'{lista_quartos[i]}')
-            
-            return quartos
-
+            quartos = lista_quartos.split('/')
+            for quarto in quartos:
+                print(quarto)
 
         elif LOGADO and comando == 'PROCURAR':
-            pass
+            # decodifica a solicitação e salva numa variável em dados
+            dados = socket_cliente.recv(TAM_MSG)
+            # pega a lista de quartos e decodifica tirando o status, codigo
+            status, codigo, quarto = dados.decode().split()
+
 
         elif (LOGADO and comando == 'LOGOUT'):
             LOGADO = False
