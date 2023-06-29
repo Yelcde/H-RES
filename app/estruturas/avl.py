@@ -59,7 +59,7 @@ class AVL:
 
     def __busca_dado(self, chave: any, no: No) -> No:
         if (chave == no.carga):
-            return no
+            return no.carga
         elif (chave < no.carga and no.esq != None):
             return self.__busca_dado(chave, no.esq)
         elif (chave > no.carga and no.dir != None):
