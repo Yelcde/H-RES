@@ -3,6 +3,7 @@ from threading import Lock
 from entidades.Controle_Clientes import Controle_Clientes
 from entidades.Controle_Quartos import Controle_Quartos
 from entidades.Repositorio_Clientes import Repositorio_Clientes
+from entidades.Repositorio_Quartos import Repositorio_Quartos
 
 
 class Hotel:
@@ -11,11 +12,12 @@ class Hotel:
     '''
     def __init__(self):
         repositorio_clientes = Repositorio_Clientes()
+        repositorio_quartos = Repositorio_Quartos()
 
         self.__lock_clientes = Lock()
         self.__lock_quartos = Lock()
         self.__controle_clientes = Controle_Clientes(repositorio_clientes)
-        self.__controle_quartos = Controle_Quartos(repositorio_clientes)
+        self.__controle_quartos = Controle_Quartos(repositorio_quartos, repositorio_clientes)
 
     # Comandos referente ao Controle de Usuario
     def registrar_cliente(self, usuario: str, senha: str) -> bool:
@@ -28,7 +30,7 @@ class Hotel:
         '''
         Método para realizar o login do usuário no sistema.
         '''
-        return self.__controle_clientes.login(usuario, senha)
+        return self.__controle_clientes.login(self.__lock_clientes, usuario, senha)
 
     def deslogar(self):
         '''
@@ -47,16 +49,16 @@ class Hotel:
         '''
         Método para listar os quartos com valor da diária abaixo do preço informado.
         '''
-        return self.__controle_quartos.listar_quartos_preco(preco_max)
+        return self.__controle_quartos.listar_quartos_preco(self.__lock_quartos, preco_max)
 
     def procurar_quarto_numero(self, numero_quarto: int):
         '''
         Método para procurar um quarto por seu numero de identificação.
         '''
-        return self.__controle_quartos.procurar_quarto_numero(numero_quarto)
+        return self.__controle_quartos.procurar_quarto_numero(self.__lock_quartos, numero_quarto)
 
     def listar_quartos(self) -> str:
         '''
         Método para listar todos os quartos do hotel.
         '''
-        return self.__controle_quartos.listar_quartos()
+        return self.__controle_quartos.listar_quartos(self.__lock_quartos)

@@ -1,51 +1,51 @@
 from entidades.Usuario import Usuario
+from entidades.Repositorio_Clientes import Repositorio_Clientes
 from excecoes import SenhaIncorretaException, UsuarioInexistenteException
-
-
+from estruturas.lista_encadeada import ListaException
 class Controle_Clientes:
     '''
     Classe responsável por controlar as ações relativas aos usuarios.
     '''
-    def __init__(self, repositorio_clientes):
+    def __init__(self, repositorio_clientes: Repositorio_Clientes):
         self.__repositorio_clientes = repositorio_clientes
 
-    def registrar(self, lock_clientes, login: str, senha: str) -> bool:
+    def registrar(self, lock_clientes, nome: str, senha: str) -> bool:
         '''
         Função responsável pela lógica de registrar o usuário no sistema.
 
         Retorna "True" se conseguiu registrar com sucesso.
         Retorna "False" se não foi possível registrar o usuário por já existir
-        outro usuário com mesmo "login".
+        outro usuário com mesmo "nome".
         '''
-        with self.__lock_clientes:
+        with lock_clientes:
             try:
-                self.__clientes.busca(login)
+                self.__repositorio_clientes.buscar_por_nome(nome)
                 return False
             except ListaException:
-                novo_usuario = f'{login}:{senha}\n'
+                novo_usuario = f'{nome}:{senha}\n'
 
                 arq_usuarios = open('./app/usuarios.txt', 'a')
                 arq_usuarios.write(novo_usuario)
                 arq_usuarios.close()
 
-                novo_usuario = Usuario(login, senha)
-                self.__repositorio_clientes.salvar_cliente(novo_usuario)
+                novo_usuario = Usuario(nome, senha)
+                self.__repositorio_clientes.salvar(novo_usuario)
 
                 return True
 
-    def login(self, usuario: str, senha: str) -> bool:
-        """
+    def login(self, lock_clientes, usuario: str, senha: str) -> bool:
+        '''
         Função responsável por realizar o login do usuário no sistema.
 
         Retorna "True" se conseguiu realizar o login com sucesso.
 
         Se o usuário não existir será lançada a exceção "UsuarioInexistenteException".
         Se a senha estiver incorreta será lançada a exceção "SenhaIncorretaException".
-        """
-        with self.__lock:
+        '''
+        with lock_clientes:
             try:
-                posicao = self.__clientes.busca(usuario)
-                usuario =  self.__clientes.elemento(posicao)
+                posicao = self.__repositorio_clientes.buscar_por_nome(usuario)
+                usuario =  self.__repositorio_clientes.buscar_por_posicao(posicao)
 
                 if usuario.senha != senha:
                     raise SenhaIncorretaException()
@@ -59,4 +59,3 @@ class Controle_Clientes:
         Método para deslogar um usuário do hotel.
         '''
         pass
-
