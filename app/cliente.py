@@ -17,6 +17,7 @@ codigos_respostas = {
     '200': 'Usuário registrado com sucesso.',
     '201': 'Usuário logado com sucesso.',
     '202': 'Usuário deslogado com sucesso.',
+    '203': 'Quarto reservado com sucesso.',
     '211': 'Quarto encontrado.',
     '400': 'Comando inválido.',
     '402': 'Usuário já existe.',
@@ -77,6 +78,7 @@ def processa_solicitacao(socket_cliente) -> bool:
             # pega a lista de quartos e decodifica tirando o status, codigo
             status, codigo, lista_quartos = dados.decode().split()
             # da um split no listar quartos separando os elementos do quarto
+
             quartos = lista_quartos.split('/')
             for quarto in quartos:
                 print(quarto)

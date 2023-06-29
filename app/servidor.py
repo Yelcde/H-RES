@@ -2,8 +2,7 @@ import socket
 import threading
 
 from entidades.Hotel import Hotel
-from entidades.Quarto import Quarto
-from excecoes import UsuarioInexistenteException, SenhaIncorretaException, QuartoIndisponivel, LoginRequerido, QuartoInexistenteException, PrecoNegativo
+from excecoes import UsuarioInexistenteException, SenhaIncorretaException, QuartoIndisponivelException, LoginRequerido, QuartoInexistenteException, PrecoNegativo
 
 TAM_MSG = 1024
 HOST = 'localhost'
@@ -25,7 +24,6 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
     comando = solicitacao[0].upper()
     resposta = ''
 
-    # Comando de registrar
     if comando == 'REGISTRAR' and len(solicitacao) == 3:
         login = solicitacao[1]
         senha = solicitacao[2]
@@ -37,7 +35,6 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         else:
             resposta = str.encode('-ERR 402')
 
-    # Comando de Login
     elif comando == 'LOGIN' and len(solicitacao) == 3:
         usuario = solicitacao[1]
         senha = solicitacao[2]
@@ -52,7 +49,6 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         except SenhaIncorretaException:
             resposta = str.encode('-ERR 404')
 
-    # Comando de Logout
     elif comando == 'LOGOUT' and len(solicitacao) == 3:
         try:
             hotel.deslogar()
@@ -72,7 +68,7 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
 
         except QuartoInexistenteException:
             resposta = str.encode(f"-ERR 413")
-        except QuartoIndisponivel:
+        except QuartoIndisponivelException:
             resposta = str.encode(f"-ERR 415")
 
     elif comando == 'PRECO' and len(solicitacao) == 2:
@@ -83,24 +79,22 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         except PrecoNegativo:
             resposta = str.encode(f"-ERR 414")
 
-    elif comando == 'RESERVAR':
-        usuario = solicitacao[1]
+    elif comando == 'RESERVAR' and len(solicitacao) == 5:
+        nome_usuario = solicitacao[1]
+        numero_quarto = solicitacao[2]
+        data_checkin = solicitacao[3]
+        data_checkout = solicitacao[4]
 
         try:
-            # Se o usuário tiver logado = ok
-            logado = hotel.login_usuario(usuario, senha)
-            # se tiver continua aqui
-            if logado:
-                # Se a reserva acontecer
-                #hotel.reservar(usuario, quarto, chekin, checkout)
-                resposta = str.encode('+OK 203')
-                # se o quarto estiver indisponível e a reserva não acontecer
-        except QuartoIndisponivel:
-            resposta = str.encode('+OK 405')
-        except LoginRequerido: # se usuário não tiver logado
-            resposta = str.encode('-ERR 411')
+            hotel.reservar_quarto(nome_usuario, numero_quarto, data_checkin, data_checkout)
+            resposta = str.encode('+OK 203')
+        except UsuarioInexistenteException:
+            resposta = str.encode('-ERR 403')
+        except QuartoIndisponivelException:
+            resposta = str.encode('-ERR 415')
+        except QuartoInexistenteException:
+            resposta = str.encode('-ERR 413')
 
-    # Comando errado geral inválido
     else:
         resposta = str.encode('-ERR 400')
 

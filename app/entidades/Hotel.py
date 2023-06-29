@@ -39,11 +39,11 @@ class Hotel:
         pass
 
     # Comandos referente ao Controle do Hotel
-    def reservar_quarto(self, usuario: str, quarto: int, checkin: str, checkout: str):
-        """
+    def reservar_quarto(self, nome_usuario: str, numero_quarto: int, checkin: str, checkout: str):
+        '''
         Método para reservar um quarto
-        """
-        return self.__controle_quartos.reservar(usuario, quarto, checkin, checkout)
+        '''
+        return self.__controle_quartos.reservar(self.__lock_quartos, self.lock_clientes, nome_usuario, numero_quarto, checkin, checkout)
 
     def listar_quartos_preco(self, preco_max: float):
         '''
