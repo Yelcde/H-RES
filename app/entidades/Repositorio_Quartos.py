@@ -10,6 +10,9 @@ class Repositorio_Quartos():
     def buscar(self, numero_quarto: int) -> Quarto:
         return self.__quartos.busca(numero_quarto)
 
+    def tamanho(self) -> int:
+        return self.tamanho()
+
     def __carregar_quartos(self):
         '''
         Método usado no momento que a classe é instanciada com o propósito de
