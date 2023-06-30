@@ -80,21 +80,29 @@ def processa_solicitacao(socket_cliente) -> bool:
             status, codigo, lista_quartos = dados.decode().split()
             # da um split no listar quartos separando os strings do quarto
 
-            
-            quartos = lista_quartos.split('/')
-            print(quartos)
+            quartos = lista_quartos.split('/')[0:-1]
+
 
             for quarto in quartos:
                 quarto = quarto.split(',')
-                print(f'Numero = {quarto[0]},')
-                if status disponivel(true)
-                else status indisponivel(false)
+                disponibilidade = quarto[2]
+                if disponibilidade.strip() == 'True':
+                    disponivel = '\033[1;34;40mDisponível\033[m'
+                else:
+                    disponivel = '\033[1;31;40mIndisponível\033[m'
+
+                print(f'Numero = {quarto[0]}\nTamanho = {quarto[1]}m²\nStatus = {disponivel}\nDiária = {quarto[3]} R$\n')
+
+
+
+    
 
         elif LOGADO and comando == 'PROCURAR':
             # decodifica a solicitação e salva numa variável em dados
             dados = socket_cliente.recv(TAM_MSG)
             # pega a lista de quartos e decodifica tirando o status, codigo
             status, codigo, quarto = dados.decode().split()
+            quarto = quarto.split()
 
 
 
