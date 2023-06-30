@@ -1,7 +1,9 @@
+from datetime import date
+
 from entidades.Repositorio_Clientes import Repositorio_Clientes
 from entidades.Repositorio_Quartos import Repositorio_Quartos
 from estruturas.lista_encadeada import ListaException
-from excecoes import PrecoNegativo, QuartoIndisponivelException, QuartoInexistenteException, UsuarioInexistenteException
+from excecoes import *
 
 class Controle_Quartos:
     '''
@@ -11,7 +13,46 @@ class Controle_Quartos:
         self.__repositorio_clientes = repositorio_clientes
         self.__repositorio_quartos = repositorio_quartos
 
-    def reservar(self, lock_quartos, lock_clientes, nome_usuario: str, numero_quarto: int, checkin: str, checkout: str):
+    def __validar_datas_para_reserva(self, checkin: str, checkout: str):
+        try:
+            dia_checkin, mes_checkin, ano_checkin = [ int(x) for x in checkin.split('/') ]
+            dia_checkout, mes_checkout, ano_checkout = [ int(x) for x in checkout.split('/') ]
+
+            try:
+                data_checkin = date(day=dia_checkin, month=mes_checkin, year=ano_checkin)
+                data_checkout = date(day=dia_checkout, month=mes_checkout, year=ano_checkout)
+                data_hoje = date.today()
+
+                if (data_checkout < data_checkin):
+                    raise DataInvalidaException()
+
+                elif (data_checkin < data_hoje):
+                    raise DataInvalidaException()
+
+                qtd_diarias = (data_checkout - data_checkin).days + 1
+
+                if (qtd_diarias > 5):
+                    raise LimiteDiariasException()
+
+                dias_ate_data_checkin = (data_checkin - data_hoje).days
+
+                if (dias_ate_data_checkin > 90):
+                    raise LimiteDataFuturaException()
+
+            except ValueError:
+                raise DataInvalidaException()
+        except ValueError:
+            raise FormatoDataInvalidoException()
+
+    def reservar(
+        self,
+        lock_quartos,
+        lock_clientes,
+        numero_quarto: int,
+        nome_usuario: str,
+        checkin: str,
+        checkout: str
+    ):
         '''
         Método para reservar um quarto disponiveis dentro do hotel.
         '''
@@ -28,11 +69,12 @@ class Controle_Quartos:
                     if (not quarto.disponivel):
                         raise QuartoIndisponivelException()
 
-                    # Validar datas
+                    self.__validar_datas_para_reserva(checkin, checkout)
+
+                    # Efetuar reserva
+                    print(f'Quarto {numero_quarto} reservado por {nome_usuario}')
                 except ListaException:
                     raise UsuarioInexistenteException()
-
-
 
     def listar_quartos_preco(self, lock_quartos, preco_max: float) -> str:
         '''

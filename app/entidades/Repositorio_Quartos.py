@@ -27,7 +27,7 @@ class Repositorio_Quartos():
 
             numero = int(quarto[0])
             tamanho = float(quarto[1])
-            disponivel = bool(quarto[2])
+            disponivel = bool(int(quarto[2]))
             valor_diaria = float(quarto[3])
 
             quarto = Quarto(numero, tamanho, disponivel, valor_diaria)
