@@ -1,7 +1,7 @@
 from entidades.Usuario import Usuario
 from entidades.Repositorio_Clientes import Repositorio_Clientes
-from excecoes import SenhaIncorretaException, UsuarioInexistenteException
 from estruturas.lista_encadeada import ListaException
+from excecoes import *
 class Controle_Clientes:
     '''
     Classe responsável por controlar as ações relativas aos usuarios.

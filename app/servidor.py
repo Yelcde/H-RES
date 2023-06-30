@@ -2,7 +2,7 @@ import socket
 import threading
 
 from entidades.Hotel import Hotel
-from excecoes import UsuarioInexistenteException, SenhaIncorretaException, QuartoIndisponivelException, LoginRequerido, QuartoInexistenteException, PrecoNegativo
+from excecoes import *
 
 TAM_MSG = 1024
 HOST = 'localhost'
@@ -64,12 +64,12 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         quarto = solicitacao[1]
         try:
             dados_quarto_procurado = hotel.procurar_quarto_numero(quarto)
-            resposta = str.encode(f'+OK 211 {dados_quarto_procurado}' )
+            resposta = str.encode(f'+OK 204 {dados_quarto_procurado}' )
 
         except QuartoInexistenteException:
-            resposta = str.encode(f"-ERR 413")
+            resposta = str.encode(f'-ERR 407')
         except QuartoIndisponivelException:
-            resposta = str.encode(f"-ERR 415")
+            resposta = str.encode(f'-ERR 409')
 
     elif comando == 'PRECO' and len(solicitacao) == 2:
         preco = solicitacao[1]
@@ -80,19 +80,27 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
             resposta = str.encode(f"-ERR 414")
 
     elif comando == 'RESERVAR' and len(solicitacao) == 5:
-        nome_usuario = solicitacao[1]
-        numero_quarto = solicitacao[2]
+        numero_quarto = int(solicitacao[1])
+        nome_usuario = solicitacao[2]
         data_checkin = solicitacao[3]
         data_checkout = solicitacao[4]
 
         try:
-            hotel.reservar_quarto(nome_usuario, numero_quarto, data_checkin, data_checkout)
+            hotel.reservar_quarto(numero_quarto, nome_usuario, data_checkin, data_checkout)
             resposta = str.encode('+OK 203')
         except UsuarioInexistenteException:
             resposta = str.encode('-ERR 403')
-        except QuartoIndisponivelException:
-            resposta = str.encode('-ERR 415')
         except QuartoInexistenteException:
+            resposta = str.encode('-ERR 407')
+        except QuartoIndisponivelException:
+            resposta = str.encode('-ERR 409')
+        except DataInvalidaException:
+            resposta = str.encode('-ERR 410')
+        except FormatoDataInvalidoException:
+            resposta = str.encode('-ERR 411')
+        except LimiteDiariasException:
+            resposta = str.encode('-ERR 412')
+        except LimiteDataFuturaException:
             resposta = str.encode('-ERR 413')
 
     else:
