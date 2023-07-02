@@ -137,5 +137,5 @@ class Controle_Quartos:
 
             for numero_quarto in range(1, self.__repositorio_quartos.tamanho() + 1):
                 quarto = self.__repositorio_quartos.buscar(numero_quarto)
-                quartos += f' ID = {quarto.numero}, TAMANHO ={quarto.tamanho} m², DISPONIVEL {quarto.disponivel}, DIARIA = {quarto.valor_diaria}/'
+                quartos += f'{quarto.numero},{quarto.tamanho},{quarto.disponivel},{quarto.valor_diaria}/'
             return quartos
