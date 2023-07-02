@@ -42,7 +42,10 @@ class No:
 
 class AVL:
     def __init__(self, carga: any = None):
-        self.__raiz = carga
+        if carga is None:
+            self.__raiz = None
+        else:
+            self.__raiz = No(carga)
 
     @property
     def raiz(self)->any:
