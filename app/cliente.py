@@ -5,6 +5,7 @@ HOST = 'localhost'
 PORTA = 50000
 TAM_MSG = 1024
 LOGADO = False
+NOME_USUARIO = ''
 
 # Obter parâmetros de conexão (HOST e PORTA) pelo terminal caso seja informado
 if len(sys.argv) == 2:
@@ -42,6 +43,7 @@ def processa_solicitacao(socket_cliente) -> bool:
     outra solicitação para o servidor.
     '''
     global LOGADO
+    global NOME_USUARIO
 
     try:
         solicitacao = input('H-RES <<< ')
@@ -63,6 +65,7 @@ def processa_solicitacao(socket_cliente) -> bool:
 
                 if codigo == '200' or codigo == '201':
                     LOGADO = True
+                    NOME_USUARIO = solicitacao.split()[1]
 
             else:
                 resposta = codigos_respostas['400']
@@ -90,13 +93,16 @@ def processa_solicitacao(socket_cliente) -> bool:
             # pega a lista de quartos e decodifica tirando o status, codigo
             status, codigo, quarto = dados.decode().split()
 
-
         elif (LOGADO and comando == 'LOGOUT'):
             LOGADO = False
             resposta = codigos_respostas['202']
             print(f'H-RES >>> +OK 202, {resposta}\n')
 
         elif (LOGADO and comando == 'RESERVAR'):
+            solicitacao = solicitacao.split()
+            solicitacao.insert(2, NOME_USUARIO)
+            solicitacao = ' '.join(solicitacao)
+
             socket_cliente.send(solicitacao.encode())
 
             dados = socket_cliente.recv(TAM_MSG)

@@ -1,6 +1,8 @@
 from datetime import date
 
+from entidades.Reserva import Reserva
 from entidades.Repositorio_Clientes import Repositorio_Clientes
+from entidades.Repositorio_Reservas import Repositorio_Reservas
 from entidades.Repositorio_Quartos import Repositorio_Quartos
 from estruturas.lista_encadeada import ListaException
 from excecoes import *
@@ -9,9 +11,15 @@ class Controle_Quartos:
     '''
     Classe responsável por controlar as ações relativas aos quartos.
     '''
-    def __init__(self, repositorio_quartos: Repositorio_Quartos, repositorio_clientes: Repositorio_Clientes):
+    def __init__(
+        self,
+        repositorio_quartos: Repositorio_Quartos,
+        repositorio_clientes: Repositorio_Clientes,
+        repositorio_reservas: Repositorio_Reservas
+    ):
         self.__repositorio_clientes = repositorio_clientes
         self.__repositorio_quartos = repositorio_quartos
+        self.__repositorio_reservas = repositorio_reservas
 
     def __validar_datas_para_reserva(self, checkin: str, checkout: str):
         try:
@@ -70,16 +78,24 @@ class Controle_Quartos:
                         raise QuartoIndisponivelException()
 
                     self.__validar_datas_para_reserva(checkin, checkout)
+                    self.__repositorio_quartos.atualizar_disponibilidade(numero_quarto)
 
-                    # Efetuar reserva
-                    print(f'Quarto {numero_quarto} reservado por {nome_usuario}')
+                    nova_reserva = f'{numero_quarto}:{nome_usuario}:{checkin}:{checkout}\n'
+
+                    arq_reservas = open('./app/reservas.txt', 'a')
+                    arq_reservas.write(nova_reserva)
+                    arq_reservas.close()
+
+                    nova_reserva = Reserva(numero_quarto, nome_usuario, checkin, checkout)
+                    self.__repositorio_reservas.salvar(nova_reserva)
+                    return
+
                 except ListaException:
                     raise UsuarioInexistenteException()
 
     def listar_quartos_preco(self, lock_quartos, preco_max: float) -> str:
         '''
-        Método para listar os quartos com valor da diária
-        abaixo do preço informado.
+        Método para listar os quartos com valor da diária abaixo do preço informado.
         '''
         with lock_quartos:
             if (preco_max > 0):

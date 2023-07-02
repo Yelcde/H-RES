@@ -1,10 +1,10 @@
 from threading import Lock
 
-from entidades.Controle_Clientes import Controle_Clientes
 from entidades.Controle_Quartos import Controle_Quartos
+from entidades.Controle_Clientes import Controle_Clientes
 from entidades.Repositorio_Clientes import Repositorio_Clientes
+from entidades.Repositorio_Reservas import Repositorio_Reservas
 from entidades.Repositorio_Quartos import Repositorio_Quartos
-
 
 class Hotel:
     '''
@@ -13,11 +13,12 @@ class Hotel:
     def __init__(self):
         repositorio_clientes = Repositorio_Clientes()
         repositorio_quartos = Repositorio_Quartos()
+        repositorio_reservas = Repositorio_Reservas()
 
         self.__lock_clientes = Lock()
         self.__lock_quartos = Lock()
         self.__controle_clientes = Controle_Clientes(repositorio_clientes)
-        self.__controle_quartos = Controle_Quartos(repositorio_quartos, repositorio_clientes)
+        self.__controle_quartos = Controle_Quartos(repositorio_quartos, repositorio_clientes, repositorio_reservas)
 
     # Comandos referente ao Controle de Usuario
     def registrar_cliente(self, usuario: str, senha: str) -> bool:
