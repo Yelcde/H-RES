@@ -3,8 +3,7 @@ from entidades.Usuario import Usuario
 
 class Repositorio_Clientes():
     def __init__(self):
-        self.__clientes = ListaEncadeada()
-
+        self.__clientes = ListaEncadeada() # Estrutura onde os clientes estão salvos
         self.__carregar_clientes() # Carrega os dados do arquivo "usuarios.txt"
 
     def salvar(self, cliente: Usuario):

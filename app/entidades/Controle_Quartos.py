@@ -98,7 +98,7 @@ class Controle_Quartos:
         Método para listar os quartos com valor da diária abaixo do preço informado.
         '''
         with lock_quartos:
-            if (preco_max > 0):
+            if (preco_max < 0):
                 raise PrecoNegativo()
 
             quartos = ''
@@ -107,23 +107,26 @@ class Controle_Quartos:
                 quarto = self.__repositorio_quartos.buscar(numero_quarto)
 
                 if quarto.valor_diaria <= preco_max:
-                    quartos += f'[{quarto.numero},{quarto.tamanho},{quarto.disponivel},{quarto.valor_diaria}]'
+                    quartos += f'{quarto.numero},{quarto.tamanho},{quarto.disponivel},{quarto.valor_diaria}/'
 
             return quartos
 
     def procurar_quarto_numero(self, lock_quartos, numero_quarto: int) -> str:
         '''
         Método para procurar um quarto por seu numero de identificação.
+        Irá retornar uma string do quarto selecionado. O quarto terá suas informações agrupadas
+        por colchetes (/). Cada informação será separada por vírgula (,).
         '''
         with lock_quartos:
             quarto = self.__repositorio_quartos.buscar(numero_quarto)
+            quarto_procurado += f'{quarto.numero},{quarto.tamanho},{quarto.disponivel},{quarto.valor_diaria}/'
 
             if (quarto is None):
                 raise QuartoInexistenteException()
             elif (not quarto.disponivel):
                 raise QuartoIndisponivelException()
 
-            return quarto
+            return quarto_procurado
 
     def listar_quartos(self, lock_quartos) -> str:
         '''

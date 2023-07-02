@@ -3,8 +3,7 @@ from entidades.Quarto import Quarto
 
 class Repositorio_Quartos():
     def __init__(self):
-        self.__quartos = AVL()
-
+        self.__quartos = AVL() # Estrutura onde os quartos estão salvos
         self.__carregar_quartos() # Carrega os dados do arquivo "quartos.txt"
 
     def atualizar_disponibilidade(self, numero_quarto: int):
