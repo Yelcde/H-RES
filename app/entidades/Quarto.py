@@ -45,6 +45,10 @@ class Quarto:
         '''
         return self.__disponivel
 
+    @disponivel.setter
+    def disponivel(self, status: bool):
+        self.__disponivel = status
+
     @property
     def tamanho(self) -> str:
         '''
