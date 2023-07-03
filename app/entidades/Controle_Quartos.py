@@ -112,6 +112,7 @@ class Controle_Quartos:
                 if quarto.valor_diaria <= preco_max:
                     quartos += f'{quarto.numero},{quarto.tamanho},{quarto.disponivel},{quarto.valor_diaria}/'
 
+            quartos = quartos[:-1] # tira a / do ultimo quarto
             return quartos
 
     def procurar_quarto_numero(self, lock_quartos, numero_quarto: int) -> str:
