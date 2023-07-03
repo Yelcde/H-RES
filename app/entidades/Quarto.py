@@ -50,18 +50,18 @@ class Quarto:
         self.__disponivel = status
 
     @property
-    def tamanho(self) -> str:
+    def tamanho(self) -> float:
         '''
         Método para ter acesso ao tamanho do quarto em metro quadrado(m2).
         '''
-        return f'{self.__tamanho}m2'
+        return self.__tamanho
 
     @property
-    def valor_diaria(self) -> str:
+    def valor_diaria(self) -> float:
         '''
         Método para ter acesso ao preço do quarto por diária.
         '''
-        return f'R${self.__valor_diaria:.2f}'
+        return self.__valor_diaria
 
     def __str__(self) -> str:
         '''

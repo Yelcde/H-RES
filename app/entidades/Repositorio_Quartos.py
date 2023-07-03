@@ -21,7 +21,7 @@ class Repositorio_Quartos():
         return self.__quartos.busca(numero_quarto)
 
     def tamanho(self) -> int:
-        return self.tamanho()
+        return self.__quartos.count()
 
     def __carregar_quartos(self):
         '''

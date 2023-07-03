@@ -96,6 +96,9 @@ class Controle_Quartos:
     def listar_quartos_preco(self, lock_quartos, preco_max: float) -> str:
         '''
         Método para listar os quartos com valor da diária abaixo do preço informado.
+
+        Irá retornar uma string de quartos. Cada quarto terá suas informações separadas
+        por uma barra (/). Cada informação do quarto será separada por vírgula (,).
         '''
         with lock_quartos:
             if (preco_max < 0):
@@ -114,17 +117,17 @@ class Controle_Quartos:
     def procurar_quarto_numero(self, lock_quartos, numero_quarto: int) -> str:
         '''
         Método para procurar um quarto por seu numero de identificação.
-        Irá retornar uma string do quarto selecionado. O quarto terá suas informações agrupadas
-        por colchetes (/). Cada informação será separada por vírgula (,).
+        Irá retornar uma string do quarto selecionado. Cada informação do quarto será separada por vírgula (,).
         '''
         with lock_quartos:
             quarto = self.__repositorio_quartos.buscar(numero_quarto)
-            quarto_procurado += f'{quarto.numero},{quarto.tamanho},{quarto.disponivel},{quarto.valor_diaria}/'
 
             if (quarto is None):
                 raise QuartoInexistenteException()
             elif (not quarto.disponivel):
                 raise QuartoIndisponivelException()
+
+            quarto_procurado += f'{quarto.numero},{quarto.tamanho},{quarto.disponivel},{quarto.valor_diaria}'
 
             return quarto_procurado
 
@@ -132,8 +135,8 @@ class Controle_Quartos:
         '''
         Função responsável por fazer a listagem de todos os quartos do hotel.
 
-        Irá retornar uma string de quartos. Cada quarto terá suas informações agrupadas
-        por colchetes (/). Cada informação será separada por vírgula (,).
+        Irá retornar uma string de quartos. Cada quarto terá suas informações separadas
+        por uma barra (/). Cada informação do quarto será separada por vírgula (,).
         '''
         with lock_quartos:
             quartos = ''
@@ -141,4 +144,7 @@ class Controle_Quartos:
             for numero_quarto in range(1, self.__repositorio_quartos.tamanho() + 1):
                 quarto = self.__repositorio_quartos.buscar(numero_quarto)
                 quartos += f'{quarto.numero},{quarto.tamanho},{quarto.disponivel},{quarto.valor_diaria}/'
+
+            quartos = quartos[:-1] # tira a / do ultimo quarto
+
             return quartos

@@ -56,7 +56,7 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         except LoginRequerido:
             resposta = str.encode('+OK 411')
 
-    elif comando == 'LISTAR' and len(solicitacao) == 2:
+    elif comando == 'LISTAR' and len(solicitacao) == 1:
         quartos = hotel.listar_quartos()
         resposta = str.encode(f'+OK 207 {quartos}')
 
