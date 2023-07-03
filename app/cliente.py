@@ -96,7 +96,7 @@ def processa_solicitacao(socket_cliente) -> bool:
                 else:
                     disponivel = '\033[1;31mIndisponível\033[m'
 
-                print(f'Numero = {quarto[0]}\nTamanho = {quarto[1]}m²\nStatus = {disponivel}\nDiária = R$ {valor_diaria:.2f}\n')
+                print(f'Numero = {quarto[0]}\nTamanho = {quarto[1]}m²\nStatus = {disponivel}\nDiária = \033[1;32mR${valor_diaria:.2f}\033[m\n')
 
         elif (LOGADO and comando == 'PROCURAR'):
             socket_cliente.send(solicitacao.encode())
