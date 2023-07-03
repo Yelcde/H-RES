@@ -127,9 +127,9 @@ class Controle_Quartos:
             elif (not quarto.disponivel):
                 raise QuartoIndisponivelException()
 
-            quarto_procurado += f'{quarto.numero},{quarto.tamanho},{quarto.disponivel},{quarto.valor_diaria}'
+            quarto = f'{quarto.numero},{quarto.tamanho},{quarto.disponivel},{quarto.valor_diaria},{quarto.quantidade_banheiros},{quarto.quantidade_quartos}'
 
-            return quarto_procurado
+            return quarto
 
     def listar_quartos(self, lock_quartos) -> str:
         '''

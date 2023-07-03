@@ -61,9 +61,9 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         resposta = str.encode(f'+OK 207 {quartos}')
 
     elif comando == 'PROCURAR' and len(solicitacao) == 2:
-        quarto = solicitacao[1]
+        numero_quarto = int(solicitacao[1])
         try:
-            dados_quarto_procurado = hotel.procurar_quarto_numero(quarto)
+            dados_quarto_procurado = hotel.procurar_quarto_numero(numero_quarto)
             resposta = str.encode(f'+OK 204 {dados_quarto_procurado}' )
 
         except QuartoInexistenteException:

@@ -86,6 +86,7 @@ def processa_solicitacao(socket_cliente) -> bool:
             quartos = lista_quartos.split('/')
             # da um outro slip para separar a lista de quartos por quartos
 
+            print()
             for quarto in quartos:
                 quarto = quarto.split(',')
                 disponibilidade = quarto[2]
@@ -98,28 +99,21 @@ def processa_solicitacao(socket_cliente) -> bool:
                 print(f'Numero = {quarto[0]}\nTamanho = {quarto[1]}m²\nStatus = {disponivel}\nDiária = R$ {valor_diaria:.2f}\n')
 
         elif (LOGADO and comando == 'PROCURAR'):
+            socket_cliente.send(solicitacao.encode())
             # decodifica a solicitação e salva numa variável em dados
             dados = socket_cliente.recv(TAM_MSG)
             # pega a lista de quartos e decodifica tirando o status, codigo
             status, codigo, quarto_procurado = dados.decode().split(' ')
-            try:
+
+            if (status == '-ERR'):
+                resposta = codigos_respostas[codigo]
+                print(f'H-RES >>> {status} {codigo} {resposta}\n')
+            else:
                 quarto = quarto_procurado.split(',')
-                disponibilidade = quarto[2]
-                if disponibilidade.strip() == 'True':
-                    disponivel = '\033[1;34;40mDisponível\033[m'
-                else:
-                    disponivel = '\033[1;31;40mIndisponível\033[m'
+                disponivel = '\033[1;34;40mDisponível\033[m'
+                valor_diaria = float(quarto[3])
 
-                print(f'Numero = {quarto[0]}\nTamanho = {quarto[1]}m²\nStatus = {disponivel}\nDiária = {quarto[3]}R$\n')
-
-            except:
-                if codigo == '407':
-                    resposta = codigos_respostas['407']
-                    print(f'H-RES >>> -ERR 407 {resposta}\n')
-                else:
-                    codigo == '409'
-                    resposta = codigos_respostas['409']
-                    print(f'H-RES >>> -ERR 409 {resposta}\n')
+                print(f'\nNumero = {quarto[0]}\nTamanho = {quarto[1]}m²\nStatus = {disponivel}\nDiária = R$ {valor_diaria:.2f}\nQuantidade de banheiros = {quarto[4]}\nQuantidade de quartos = {quarto[5]}\n')
 
         elif (LOGADO and comando == 'PRECO'):
             # decodifica a solicitação e salva numa variável em dados
