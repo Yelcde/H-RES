@@ -148,3 +148,12 @@ class Controle_Quartos:
             quartos = quartos[:-1] # tira a / do ultimo quarto
 
             return quartos
+
+    def cancelar_reserva(self, lock_quartos, numero_quarto, nome_usuario):
+        '''
+        Método para cancelar reserva feita pelo cliente
+        '''
+
+        with lock_quartos:
+            usuario = self.__repositorio_clientes.buscar(nome_usuario)
+            
