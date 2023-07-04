@@ -38,6 +38,6 @@ class FormatoDataInvalidoException(Exception):
     def __init__(self):
         super().__init__('Formato de data inválido, informe DIA/MES/ANO.')
 
-class ReservaInexistente(Exception):
+class ReservaInexistenteExeption(Exception):
     def __init__(self):
         super().__init__('Essa reserva não existe.')

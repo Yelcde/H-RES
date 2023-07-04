@@ -30,3 +30,6 @@ class Repositorio_Reservas():
             self.__reservas.inserir(reserva)
 
         arq_reservas.close()
+
+    def remover_reserva(self, numero_quarto):
+        self.__reservas.remover(numero_quarto)

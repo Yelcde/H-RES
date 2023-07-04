@@ -113,7 +113,7 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
             resposta = str.encode(f'-ERR 407')
         except UsuarioInexistenteException:
             resposta = str.encode('-ERR 403')
-        except ReservaInexistente:
+        except ReservaInexistenteExeption:
             resposta = str.encode('-ERR 414')
     else:
         resposta = str.encode('-ERR 400')

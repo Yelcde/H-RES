@@ -65,7 +65,7 @@ class Controle_Quartos:
         Método para reservar um quarto disponiveis dentro do hotel.
         '''
         with lock_quartos:
-            with lock_clientes:
+            with lock_clientes: # Alterar
                 try:
                     self.__repositorio_clientes.buscar_por_nome(nome_usuario)
 
@@ -155,5 +155,39 @@ class Controle_Quartos:
         '''
 
         with lock_quartos:
-            usuario = self.__repositorio_clientes.buscar(nome_usuario)
-            
+            try:
+                self.__repositorio_clientes.buscar(nome_usuario)
+                quarto_cancelar = self.__repositorio_quartos.buscar(numero_quarto)
+
+                if quarto_cancelar == None:
+                    raise QuartoInexistenteException()
+                
+                self.__repositorio_quartos.atualizar_disponibilidade(numero_quarto)
+                self.__repositorio_reservas.remover_reserva(numero_quarto)
+
+                # Abrindo arquivo de reserva 
+                arq_reservas = open('./app/reservas.txt', 'a')
+                reservas = arq_reservas.readlines()[1:] # Tirando o cabeçalho
+                arq_reservas.close() # Fechando arquivo
+
+                tam = len(reservas) # Pegando tamanho da lista
+                # Tirando a linha do usuario que cancelou a reserva
+                for i in reservas:
+                    i = i.split(':')
+                    if i[0] == numero_quarto and i[1] == nome_usuario:
+                        reservas.remove(i)
+                
+                # Verificando se retirou alguma linha
+                if tam == len(reservas):
+                    raise ReservaInexistenteExeption()
+                
+                arq_reservas = open('./app/reservas.txt', 'w')
+                arq_reservas.write("Número quarto(ID) | Nome do usuário | Checkin | Checkout")
+                # Escrevendo no arquivo sem a reserva 
+                for i in reservas:
+                    arq_reservas.write(i) 
+                
+                arq_reservas.close()
+
+            except ListaException:
+                raise UsuarioInexistenteException()
