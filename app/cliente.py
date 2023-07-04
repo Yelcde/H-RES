@@ -20,6 +20,7 @@ codigos_respostas = {
     '202': 'Usuário deslogado com sucesso.',
     '203': 'Quarto reservado com sucesso.',
     '204': 'Quarto encontrado.',
+    '205': 'Reserva cancelada com sucesso',
     '400': 'Comando inválido.',
     '402': 'Usuário já existe.',
     '403': 'Usuário não existe.',
@@ -32,7 +33,8 @@ codigos_respostas = {
     '410': 'Data inválida.',
     '411': 'Formato de data inválido.',
     '412': 'Limite máximo de 5 diárias atingido.',
-    '413': 'Não pode reservar para uma data daqui a 90 dias.'
+    '413': 'Não pode reservar para uma data daqui a 90 dias.',
+    '414': 'Reserva inexistente.'
 }
 
 def processa_solicitacao(socket_cliente) -> bool:
