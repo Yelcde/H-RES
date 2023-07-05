@@ -63,3 +63,7 @@ class Hotel:
         Método para listar todos os quartos do hotel.
         '''
         return self.__controle_quartos.listar_quartos(self.__lock_quartos)
+    
+    def cancelar_reserva(self, numero_quarto, nome_usuario):
+        ''' Método para cancelar uma reseva de quartos do hotel. '''
+        return self.__controle_quartos.cancelar_reserva(self.__lock_quartos, numero_quarto, nome_usuario)

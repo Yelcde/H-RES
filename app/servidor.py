@@ -103,6 +103,18 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         except LimiteDataFuturaException:
             resposta = str.encode('-ERR 413')
 
+    elif comando == 'CANCELAR' and len(solicitacao) == 3:
+        numero_quarto = int(solicitacao[1])
+        nome_usuario = solicitacao[2]
+        try:
+            quartos = hotel.cancelar_reserva(numero_quarto, nome_usuario)
+            resposta = str.encode(f'+OK 205')
+        except QuartoInexistenteException:
+            resposta = str.encode(f'-ERR 407')
+        except UsuarioInexistenteException:
+            resposta = str.encode('-ERR 403')
+        except ReservaInexistenteExeption:
+            resposta = str.encode('-ERR 414')
     else:
         resposta = str.encode('-ERR 400')
 
