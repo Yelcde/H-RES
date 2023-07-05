@@ -6,7 +6,7 @@ from excecoes import *
 
 TAM_MSG = 1024
 HOST = 'localhost'
-PORT = 50000
+PORT = 60000
 
 def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
     '''

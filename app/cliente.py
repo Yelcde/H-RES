@@ -2,7 +2,7 @@ import socket
 import sys
 
 HOST = 'localhost'
-PORTA = 50000
+PORTA = 60000
 TAM_MSG = 1024
 LOGADO = False
 NOME_USUARIO = ''
@@ -155,10 +155,24 @@ def processa_solicitacao(socket_cliente) -> bool:
             resposta = codigos_respostas[codigo]
             print(f'H-RES >>> {status} {codigo}, {resposta}\n')
 
+        elif (LOGADO and comando == 'CANCELAR'):
+            solicitacao = solicitacao.split()
+            solicitacao.insert(2, NOME_USUARIO)
+            solicitacao = ' '.join(solicitacao)
+
+            socket_cliente.send(solicitacao.encode())
+
+            dados = socket_cliente.recv(TAM_MSG)
+            status, codigo = dados.decode().split()
+
+            resposta = codigos_respostas[codigo]
+            print(f'H-RES >>> {status} {codigo}, {resposta}\n')
+
+
         else:
             resposta = codigos_respostas['400']
             print(f'H-RES >>> -ERR 400, {resposta}\n')
-
+        
     else:
         resposta = codigos_respostas['400']
         print(f'H-RES >>> -ERR 400, {resposta}\n')

@@ -80,10 +80,10 @@ class Controle_Quartos:
                     self.__validar_datas_para_reserva(checkin, checkout)
                     self.__repositorio_quartos.atualizar_disponibilidade(numero_quarto)
 
-                    nova_reserva = f'{numero_quarto}:{nome_usuario}:{checkin}:{checkout}\n'
+                    nova_reserva = f'{numero_quarto}:{nome_usuario}:{checkin}:{checkout}'
 
                     arq_reservas = open('./app/reservas.txt', 'a')
-                    arq_reservas.write(nova_reserva)
+                    arq_reservas.write(f'{nova_reserva}\n')
                     arq_reservas.close()
 
                     nova_reserva = Reserva(numero_quarto, nome_usuario, checkin, checkout)
@@ -156,7 +156,7 @@ class Controle_Quartos:
 
         with lock_quartos:
             try:
-                self.__repositorio_clientes.buscar(nome_usuario)
+                self.__repositorio_clientes.buscar_por_nome(nome_usuario)
                 quarto_cancelar = self.__repositorio_quartos.buscar(numero_quarto)
 
                 if quarto_cancelar == None:
@@ -166,23 +166,24 @@ class Controle_Quartos:
                 self.__repositorio_reservas.remover_reserva(numero_quarto)
 
                 # Abrindo arquivo de reserva 
-                arq_reservas = open('./app/reservas.txt', 'a')
+                arq_reservas = open('./app/reservas.txt', 'r')
                 reservas = arq_reservas.readlines()[1:] # Tirando o cabeçalho
                 arq_reservas.close() # Fechando arquivo
 
                 tam = len(reservas) # Pegando tamanho da lista
+                
                 # Tirando a linha do usuario que cancelou a reserva
-                for i in reservas:
-                    i = i.split(':')
-                    if i[0] == numero_quarto and i[1] == nome_usuario:
-                        reservas.remove(i)
+                for reserva in reservas:
+                    id = int(reserva.split(':')[0])
+                    if id == numero_quarto:
+                        reservas.remove(reserva)
                 
                 # Verificando se retirou alguma linha
                 if tam == len(reservas):
                     raise ReservaInexistenteExeption()
                 
                 arq_reservas = open('./app/reservas.txt', 'w')
-                arq_reservas.write("Número quarto(ID) | Nome do usuário | Checkin | Checkout")
+                arq_reservas.write("Número quarto(ID) | Nome do usuário | Checkin | Checkout\n")
                 # Escrevendo no arquivo sem a reserva 
                 for i in reservas:
                     arq_reservas.write(i) 
