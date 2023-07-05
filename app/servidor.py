@@ -72,9 +72,9 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
             resposta = str.encode(f'-ERR 409 ')
 
     elif comando == 'PRECO' and len(solicitacao) == 2:
-        preco = solicitacao[1]
+        preco = float(solicitacao[1])
         try:
-            quartos = hotel.procurar_quarto_preco(preco)
+            quartos = hotel.listar_quartos_preco(preco)
             resposta = str.encode(f'+OK 207 {quartos}')
         except PrecoNegativo:
             resposta = str.encode(f'-ERR 408 ')
