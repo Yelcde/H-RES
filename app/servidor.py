@@ -38,7 +38,7 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         if registrou:
             resposta = '+OK 200'
         else:
-            resposta = '-ERR 402'
+            resposta = '-ERR 401'
 
     elif comando == 'LOGIN' and len(solicitacao) == 3:
         usuario = solicitacao[1]
@@ -50,16 +50,16 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
             if logou:
                 resposta = '+OK 201'
         except UsuarioInexistenteException:
-            resposta = '-ERR 403'
+            resposta = '-ERR 402'
         except SenhaIncorretaException:
-            resposta = '-ERR 404'
+            resposta = '-ERR 402'
 
     elif comando == 'LOGOUT' and len(solicitacao) == 3:
         try:
             hotel.deslogar()
             resposta = '+OK 202'
         except LoginRequerido:
-            resposta = '+OK 411'
+            resposta = '+OK 409'
 
     elif comando == 'LISTAR' and len(solicitacao) == 1:
         quartos = hotel.listar_quartos()
@@ -72,17 +72,17 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
             resposta = f'+OK 204 {dados_quarto_procurado}'
 
         except QuartoInexistenteException:
-            resposta = '-ERR 407 '
+            resposta = '-ERR 405 '
         except QuartoIndisponivelException:
-            resposta = '-ERR 409 '
+            resposta = '-ERR 407 '
 
     elif comando == 'PRECO' and len(solicitacao) == 2:
         preco = float(solicitacao[1])
         try:
             quartos = hotel.listar_quartos_preco(preco)
-            resposta = f'+OK 207 {quartos}'
+            resposta = f'+OK 206 {quartos}'
         except PrecoNegativo:
-            resposta = '-ERR 408'
+            resposta = '-ERR 406'
 
     elif comando == 'RESERVAR' and len(solicitacao) == 5:
         numero_quarto = int(solicitacao[1])
@@ -94,19 +94,19 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
             hotel.reservar_quarto(numero_quarto, nome_usuario, data_checkin, data_checkout)
             resposta = '+OK 203'
         except UsuarioInexistenteException:
-            resposta = '-ERR 403'
+            resposta = '-ERR 402'
         except QuartoInexistenteException:
-            resposta = '-ERR 407'
+            resposta = '-ERR 405'
         except QuartoIndisponivelException:
-            resposta = '-ERR 409'
+            resposta = '-ERR 407'
         except DataInvalidaException:
-            resposta = '-ERR 410'
+            resposta = '-ERR 408'
         except FormatoDataInvalidoException:
-            resposta = '-ERR 411'
+            resposta = '-ERR 409'
         except LimiteDiariasException:
-            resposta = '-ERR 412'
+            resposta = '-ERR 410'
         except LimiteDataFuturaException:
-            resposta = '-ERR 413'
+            resposta = '-ERR 411'
 
     elif comando == 'CANCELAR' and len(solicitacao) == 3:
         numero_quarto = int(solicitacao[1])
@@ -115,11 +115,11 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
             quartos = hotel.cancelar_reserva(numero_quarto, nome_usuario)
             resposta = '+OK 205'
         except QuartoInexistenteException:
-            resposta = '-ERR 407'
+            resposta = '-ERR 405'
         except UsuarioInexistenteException:
-            resposta = '-ERR 403'
+            resposta = '-ERR 402'
         except ReservaInexistenteExeption:
-            resposta = '-ERR 414'
+            resposta = '-ERR 412'
 
     else:
         resposta = '-ERR 400'

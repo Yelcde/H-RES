@@ -21,20 +21,21 @@ codigos_respostas = {
     '203': 'Quarto reservado com sucesso.',
     '204': 'Quarto encontrado.',
     '205': 'Reserva cancelada com sucesso',
+    '206': 'Procura por preço concluída.',
+    '207': 'Listagem concluída.',
     '400': 'Comando inválido.',
-    '402': 'Usuário já existe.',
-    '403': 'Usuário não existe.',
-    '404': 'Senha incorreta.',
-    '405': 'Usuário não está logado.',
-    '406': 'Usuário já está logado.',
-    '407': 'Quarto inexistente.',
-    '408': 'O preço precisa ser um valor positivo.',
-    '409': 'Quarto indiponível.',
-    '410': 'Data inválida.',
-    '411': 'Formato de data inválido.',
-    '412': 'Limite máximo de 5 diárias atingido.',
-    '413': 'Não pode reservar para uma data daqui a 90 dias.',
-    '414': 'Reserva inexistente.'
+    '401': 'Usuário já existe.',
+    '402': 'Usuário ou senha incorreta.',
+    '403': 'Usuário não está logado.',
+    '404': 'Usuário já está logado.',
+    '405': 'Quarto inexistente.',
+    '406': 'O preço precisa ser um valor positivo.',
+    '407': 'Quarto indiponível.',
+    '408': 'Data inválida.',
+    '409': 'Formato de data inválido.',
+    '410': 'Limite máximo de 5 diárias atingido.',
+    '411': 'Não pode reservar para uma data daqui a 90 dias.',
+    '412': 'Reserva inexistente.'
 }
 
 def processa_solicitacao(socket_cliente) -> bool:
@@ -75,8 +76,8 @@ def processa_solicitacao(socket_cliente) -> bool:
 
         elif (LOGADO and comando == 'LOGIN') or (LOGADO and comando == 'REGISTRAR'):
             # Se o usuário estiver logado e tenta logar novamente
-            resposta = codigos_respostas['406']
-            print(f'H-RES >>> -ERR 406, {resposta}\n')
+            resposta = codigos_respostas['404']
+            print(f'H-RES >>> -ERR 404, {resposta}\n')
 
         elif (LOGADO and comando == 'LISTAR'):
             socket_cliente.send(solicitacao.encode())
@@ -130,8 +131,8 @@ def processa_solicitacao(socket_cliente) -> bool:
                 # da um outro slip para separar a lista de quartos por quartos
 
                 if (status == '-ERR'):
-                    resposta = codigos_respostas['408']
-                    print(f'H-RES >>> -ERR 408 {resposta}\n')
+                    resposta = codigos_respostas['406']
+                    print(f'H-RES >>> -ERR 406 {resposta}\n')
                 else:
                     print()
                     for quarto in quartos:
