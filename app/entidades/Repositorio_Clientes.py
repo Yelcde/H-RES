@@ -2,6 +2,9 @@ from estruturas.lista_encadeada import ListaEncadeada
 from entidades.Usuario import Usuario
 
 class Repositorio_Clientes():
+    '''
+    Classe responsável por armazenar os clientes cadastrados.
+    '''
     def __init__(self):
         self.__clientes = ListaEncadeada() # Estrutura onde os clientes estão salvos
         self.__carregar_clientes() # Carrega os dados do arquivo "usuarios.txt"

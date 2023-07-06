@@ -2,6 +2,9 @@ from estruturas.avl import AVL
 from entidades.Reserva import Reserva
 
 class Repositorio_Reservas():
+    '''
+    Classe responsável por armazenar as reservas.
+    '''
     def __init__(self):
         self.__reservas = AVL()
         self.__carregar_reservas()

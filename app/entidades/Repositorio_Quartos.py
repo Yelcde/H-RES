@@ -2,6 +2,9 @@ from estruturas.avl import AVL
 from entidades.Quarto import Quarto
 
 class Repositorio_Quartos():
+    '''
+    Classe responsável por armazenar os quartos do hotel.
+    '''
     def __init__(self):
         self.__quartos = AVL() # Estrutura onde os quartos estão salvos
         self.__carregar_quartos() # Carrega os dados do arquivo "quartos.txt"
