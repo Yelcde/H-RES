@@ -182,7 +182,7 @@ def processa_solicitacao(socket_cliente) -> bool:
         else:
             resposta = codigos_respostas['400']
             print(f'H-RES >>> -ERR 400, {resposta}\n')
-        
+
     else:
         resposta = codigos_respostas['400']
         print(f'H-RES >>> -ERR 400, {resposta}\n')

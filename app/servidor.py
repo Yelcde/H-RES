@@ -5,7 +5,7 @@ from entidades.Hotel import Hotel
 from excecoes import *
 
 TAM_MSG = 1024
-HOST = 'localhost'
+HOST = '0.0.0.0'
 PORT = 60000
 
 def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
@@ -20,6 +20,11 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
 
     print(f'Cliente {endereco_cliente} mandou: {solicitacao}')
 
+    # Não executa o restante do código se o usuário mandou uma string vazia
+    if solicitacao == '':
+        socket_cliente.send(str.encode('-ERR 400\n'))
+        return True
+
     solicitacao = solicitacao.split()
     comando = solicitacao[0].upper()
     resposta = ''
@@ -31,9 +36,9 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
         registrou = hotel.registrar_cliente(login, senha)
 
         if registrou:
-            resposta = str.encode('+OK 200')
+            resposta = '+OK 200'
         else:
-            resposta = str.encode('-ERR 402')
+            resposta = '-ERR 402'
 
     elif comando == 'LOGIN' and len(solicitacao) == 3:
         usuario = solicitacao[1]
@@ -43,41 +48,41 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
             logou = hotel.login_cliente(usuario, senha)
 
             if logou:
-                resposta = str.encode('+OK 201')
+                resposta = '+OK 201'
         except UsuarioInexistenteException:
-            resposta = str.encode('-ERR 403')
+            resposta = '-ERR 403'
         except SenhaIncorretaException:
-            resposta = str.encode('-ERR 404')
+            resposta = '-ERR 404'
 
     elif comando == 'LOGOUT' and len(solicitacao) == 3:
         try:
             hotel.deslogar()
-            resposta = str.encode('+OK 202')
+            resposta = '+OK 202'
         except LoginRequerido:
-            resposta = str.encode('+OK 411')
+            resposta = '+OK 411'
 
     elif comando == 'LISTAR' and len(solicitacao) == 1:
         quartos = hotel.listar_quartos()
-        resposta = str.encode(f'+OK 207 {quartos}')
+        resposta = f'+OK 207 {quartos}'
 
     elif comando == 'PROCURAR' and len(solicitacao) == 2:
         numero_quarto = int(solicitacao[1])
         try:
             dados_quarto_procurado = hotel.procurar_quarto_numero(numero_quarto)
-            resposta = str.encode(f'+OK 204 {dados_quarto_procurado}' )
+            resposta = f'+OK 204 {dados_quarto_procurado}'
 
         except QuartoInexistenteException:
-            resposta = str.encode(f'-ERR 407 ')
+            resposta = '-ERR 407 '
         except QuartoIndisponivelException:
-            resposta = str.encode(f'-ERR 409 ')
+            resposta = '-ERR 409 '
 
     elif comando == 'PRECO' and len(solicitacao) == 2:
         preco = float(solicitacao[1])
         try:
             quartos = hotel.listar_quartos_preco(preco)
-            resposta = str.encode(f'+OK 207 {quartos}')
+            resposta = f'+OK 207 {quartos}'
         except PrecoNegativo:
-            resposta = str.encode(f'-ERR 408 ')
+            resposta = '-ERR 408'
 
     elif comando == 'RESERVAR' and len(solicitacao) == 5:
         numero_quarto = int(solicitacao[1])
@@ -87,38 +92,39 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
 
         try:
             hotel.reservar_quarto(numero_quarto, nome_usuario, data_checkin, data_checkout)
-            resposta = str.encode('+OK 203')
+            resposta = '+OK 203'
         except UsuarioInexistenteException:
-            resposta = str.encode('-ERR 403')
+            resposta = '-ERR 403'
         except QuartoInexistenteException:
-            resposta = str.encode('-ERR 407')
+            resposta = '-ERR 407'
         except QuartoIndisponivelException:
-            resposta = str.encode('-ERR 409')
+            resposta = '-ERR 409'
         except DataInvalidaException:
-            resposta = str.encode('-ERR 410')
+            resposta = '-ERR 410'
         except FormatoDataInvalidoException:
-            resposta = str.encode('-ERR 411')
+            resposta = '-ERR 411'
         except LimiteDiariasException:
-            resposta = str.encode('-ERR 412')
+            resposta = '-ERR 412'
         except LimiteDataFuturaException:
-            resposta = str.encode('-ERR 413')
+            resposta = '-ERR 413'
 
     elif comando == 'CANCELAR' and len(solicitacao) == 3:
         numero_quarto = int(solicitacao[1])
         nome_usuario = solicitacao[2]
         try:
             quartos = hotel.cancelar_reserva(numero_quarto, nome_usuario)
-            resposta = str.encode(f'+OK 205')
+            resposta = '+OK 205'
         except QuartoInexistenteException:
-            resposta = str.encode(f'-ERR 407')
+            resposta = '-ERR 407'
         except UsuarioInexistenteException:
-            resposta = str.encode('-ERR 403')
+            resposta = '-ERR 403'
         except ReservaInexistenteExeption:
-            resposta = str.encode('-ERR 414')
-    else:
-        resposta = str.encode('-ERR 400')
+            resposta = '-ERR 414'
 
-    socket_cliente.send(resposta)
+    else:
+        resposta = '-ERR 400'
+
+    socket_cliente.send(str.encode(f'{resposta}\n'))
     return True
 
 def processar_clientes(socket_cliente, endereco_cliente):
