@@ -64,34 +64,33 @@ class Controle_Quartos:
         '''
         Método para reservar um quarto disponiveis dentro do hotel.
         '''
+        with lock_clientes:
+            try:
+                self.__repositorio_clientes.buscar_por_nome(nome_usuario)
+            except ListaException:
+                raise UsuarioInexistenteException()
+
         with lock_quartos:
-            with lock_clientes: # Alterar
-                try:
-                    self.__repositorio_clientes.buscar_por_nome(nome_usuario)
+            quarto = self.__repositorio_quartos.buscar(numero_quarto)
 
-                    quarto = self.__repositorio_quartos.buscar(numero_quarto)
+            if (quarto is None):
+                raise QuartoInexistenteException()
 
-                    if (quarto is None):
-                        raise QuartoInexistenteException()
+            if (not quarto.disponivel):
+                raise QuartoIndisponivelException()
 
-                    if (not quarto.disponivel):
-                        raise QuartoIndisponivelException()
+            self.__validar_datas_para_reserva(checkin, checkout)
+            self.__repositorio_quartos.atualizar_disponibilidade(numero_quarto)
 
-                    self.__validar_datas_para_reserva(checkin, checkout)
-                    self.__repositorio_quartos.atualizar_disponibilidade(numero_quarto)
+            nova_reserva = f'{numero_quarto}:{nome_usuario}:{checkin}:{checkout}'
 
-                    nova_reserva = f'{numero_quarto}:{nome_usuario}:{checkin}:{checkout}'
+            arq_reservas = open('./app/reservas.txt', 'a')
+            arq_reservas.write(f'{nova_reserva}\n')
+            arq_reservas.close()
 
-                    arq_reservas = open('./app/reservas.txt', 'a')
-                    arq_reservas.write(f'{nova_reserva}\n')
-                    arq_reservas.close()
-
-                    nova_reserva = Reserva(numero_quarto, nome_usuario, checkin, checkout)
-                    self.__repositorio_reservas.salvar(nova_reserva)
-                    return
-
-                except ListaException:
-                    raise UsuarioInexistenteException()
+            nova_reserva = Reserva(numero_quarto, nome_usuario, checkin, checkout)
+            self.__repositorio_reservas.salvar(nova_reserva)
+            return
 
     def listar_quartos_preco(self, lock_quartos, preco_max: float) -> str:
         '''
@@ -162,33 +161,33 @@ class Controle_Quartos:
 
                 if quarto_cancelar == None:
                     raise QuartoInexistenteException()
-                
+
                 self.__repositorio_quartos.atualizar_disponibilidade(numero_quarto)
                 self.__repositorio_reservas.remover_reserva(numero_quarto)
 
-                # Abrindo arquivo de reserva 
+                # Abrindo arquivo de reserva
                 arq_reservas = open('./app/reservas.txt', 'r')
                 reservas = arq_reservas.readlines()[1:] # Tirando o cabeçalho
                 arq_reservas.close() # Fechando arquivo
 
                 tam = len(reservas) # Pegando tamanho da lista
-                
+
                 # Tirando a linha do usuario que cancelou a reserva
                 for reserva in reservas:
                     id = int(reserva.split(':')[0])
                     if id == numero_quarto:
                         reservas.remove(reserva)
-                
+
                 # Verificando se retirou alguma linha
                 if tam == len(reservas):
                     raise ReservaInexistenteExeption()
-                
+
                 arq_reservas = open('./app/reservas.txt', 'w')
                 arq_reservas.write("Número quarto(ID) | Nome do usuário | Checkin | Checkout\n")
-                # Escrevendo no arquivo sem a reserva 
+                # Escrevendo no arquivo sem a reserva
                 for i in reservas:
-                    arq_reservas.write(i) 
-                
+                    arq_reservas.write(i)
+
                 arq_reservas.close()
 
             except ListaException:
