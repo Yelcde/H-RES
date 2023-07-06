@@ -53,9 +53,3 @@ class Controle_Clientes:
                 return True
             except ListaException:
                 raise UsuarioInexistenteException()
-
-    def deslogar(self):
-        '''
-        Método para deslogar um usuário do hotel.
-        '''
-        pass

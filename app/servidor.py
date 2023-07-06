@@ -53,12 +53,6 @@ def atender_cliente(socket_cliente, endereco_cliente, solicitacao) -> bool:
             resposta = '-ERR 402'
         except SenhaIncorretaException:
             resposta = '-ERR 402'
-
-    elif comando == 'LOGOUT' and len(solicitacao) == 3:
-        try:
-            hotel.deslogar()
-            resposta = '+OK 202'
-        except LoginRequerido:
             resposta = '+OK 409'
 
     elif comando == 'LISTAR' and len(solicitacao) == 1:

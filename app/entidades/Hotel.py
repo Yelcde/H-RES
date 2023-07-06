@@ -33,12 +33,6 @@ class Hotel:
         '''
         return self.__controle_clientes.login(self.__lock_clientes, usuario, senha)
 
-    def deslogar(self):
-        '''
-        Método para deslogar um usuário do hotel.
-        '''
-        pass
-
     # Comandos referente ao Controle do Hotel
     def reservar_quarto(self, numero_quarto: int, nome_usuario: str, checkin: str, checkout: str):
         '''
@@ -63,7 +57,7 @@ class Hotel:
         Método para listar todos os quartos do hotel.
         '''
         return self.__controle_quartos.listar_quartos(self.__lock_quartos)
-    
+
     def cancelar_reserva(self, numero_quarto, nome_usuario):
         ''' Método para cancelar uma reseva de quartos do hotel. '''
         return self.__controle_quartos.cancelar_reserva(self.__lock_quartos, numero_quarto, nome_usuario)
