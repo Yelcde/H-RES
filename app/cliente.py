@@ -116,7 +116,7 @@ def processa_solicitacao(socket_cliente) -> bool:
                 disponivel = '\033[1;34mDisponível\033[m'
                 valor_diaria = float(quarto[3])
 
-                print(f'\nNumero = {quarto[0]}\nTamanho = {quarto[1]}m²\nStatus = {disponivel}\nDiária = R$ {valor_diaria:.2f}\nQuantidade de banheiros = {quarto[4]}\nQuantidade de quartos = {quarto[5]}\n')
+                print(f'\nNumero = {quarto[0]}\nTamanho = {quarto[1]}m²\nStatus = {disponivel}\nDiária = \033[1;32mR${valor_diaria:.2f}\033[m\nQuantidade de banheiros = {quarto[4]}\nQuantidade de quartos = {quarto[5]}\n')
 
         elif (LOGADO and comando == 'PRECO'):
             socket_cliente.send(solicitacao.encode())
@@ -144,7 +144,7 @@ def processa_solicitacao(socket_cliente) -> bool:
                         else:
                             disponivel = '\033[1;31mIndisponível\033[m'
 
-                        print(f'Numero = {quarto[0]}\nTamanho = {quarto[1]}m²\nStatus = {disponivel}\nDiária = R$ {valor_diaria:.2f}\n')
+                        print(f'Numero = {quarto[0]}\nTamanho = {quarto[1]}m²\nStatus = {disponivel}\nDiária = \033[1;32mR${valor_diaria:.2f}\033[m\n')
             else:
                 print(f'\nNão existe quarto abaixo de R$ {solicitacao.split()[1]:.2}\n')
 
